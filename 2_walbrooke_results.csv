@@ -1,0 +1,10 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,8524,8527,0,12000,Black Redstart,blared1,0.1541,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240611_213502.wav,45
+2,Spectrogram 1,1,84166,84169,0,12000,Black Redstart,blared1,0.3292,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240616_084500.wav,15
+3,Spectrogram 1,1,92341,92344,0,12000,Black Redstart,blared1,0.9987,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240616_200500.wav,30
+4,Spectrogram 1,1,92344,92347,0,12000,Black Redstart,blared1,0.7273,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240616_200500.wav,33
+5,Spectrogram 1,1,92347,92350,0,12000,Black Redstart,blared1,0.9652,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240616_200500.wav,36
+6,Spectrogram 1,1,92368,92371,0,12000,Black Redstart,blared1,0.9748,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240616_200500.wav,57
+7,Spectrogram 1,1,115546,115549,0,12000,Black Redstart,blared1,0.8032,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240618_053000.wav,6
+8,Spectrogram 1,1,115795,115798,0,12000,Black Redstart,blared1,0.8717,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240618_055000.wav,15
+9,Spectrogram 1,1,115834,115837,0,12000,Black Redstart,blared1,0.9707,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\walbrooke_Bird_data\WARBROOK_20240618_055000.wav,54

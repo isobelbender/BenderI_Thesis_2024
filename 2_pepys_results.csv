@@ -1,0 +1,3 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,4716,4719,0,12000,Black Redstart,blared1,0.317,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\Pepys Bird Data June 18\Data2\SEEING_20240611_185000.wav,36
+2,Spectrogram 1,1,46416,46419,0,12000,Black Redstart,blared1,0.2948,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\Pepys Bird Data June 18\Data2\SEEING_20240614_060000.wav,45

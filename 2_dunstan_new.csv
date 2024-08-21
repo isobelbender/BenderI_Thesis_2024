@@ -1,0 +1,7 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,1609,1612,0,12000,Black Redstart,blared1,0.1945,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\dunstan\Data2\DUSTEN_20240611_140000.wav,6
+2,Spectrogram 1,1,1615,1618,0,12000,Black Redstart,blared1,0.1241,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\dunstan\Data2\DUSTEN_20240611_140000.wav,12
+3,Spectrogram 1,1,64297,64300,0,12000,Black Redstart,blared1,0.5836,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\dunstan\Data2\DUSTEN_20240615_064500.wav,6
+4,Spectrogram 1,1,64447,64450,0,12000,Black Redstart,blared1,0.1313,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\dunstan\Data2\DUSTEN_20240615_065500.wav,36
+5,Spectrogram 1,1,99823,99826,0,12000,Black Redstart,blared1,0.1811,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\dunstan\Data2\DUSTEN_20240617_085500.wav,15
+6,Spectrogram 1,1,117289,117292,0,12000,Black Redstart,blared1,0.7688,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\dunstan\Data2\DUSTEN_20240618_093500.wav,21

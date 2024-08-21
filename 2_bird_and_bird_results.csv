@@ -1,0 +1,12 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,44855,44858,0,12000,Black Redstart,blared1,0.2857,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240705_061500.wav,0
+2,Spectrogram 1,1,44879,44882,0,12000,Black Redstart,blared1,0.1345,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240705_061500.wav,24
+3,Spectrogram 1,1,78800,78803,0,12000,Black Redstart,blared1,0.4067,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240707_061500.wav,3
+4,Spectrogram 1,1,94259,94262,0,12000,Black Redstart,blared1,0.9769,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240708_040502.wav,3
+5,Spectrogram 1,1,97643,97646,0,12000,Black Redstart,blared1,0.9777,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240708_085000.wav,15
+6,Spectrogram 1,1,97646,97649,0,12000,Black Redstart,blared1,0.9359,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240708_085000.wav,18
+7,Spectrogram 1,1,97664,97667,0,12000,Black Redstart,blared1,0.8888,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240708_085000.wav,36
+8,Spectrogram 1,1,103553,103556,0,12000,Black Redstart,blared1,0.9639,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240708_170000.wav,45
+9,Spectrogram 1,1,103562,103565,0,12000,Black Redstart,blared1,0.8137,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240708_170000.wav,54
+10,Spectrogram 1,1,113471,113474,0,12000,Black Redstart,blared1,0.9927,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240709_071500.wav,15
+11,Spectrogram 1,1,113474,113477,0,12000,Black Redstart,blared1,0.9985,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 4\bird_and_bird\Data2\BIRDBIRD_20240709_071500.wav,18

@@ -1,0 +1,22 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,,,,,,Black Redstart,blared1,0.976,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240629_041502.wav,27
+2,Spectrogram 1,,,,,,Black Redstart,blared1,0.1223,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240629_041502.wav,42
+3,Spectrogram 1,,,,,,Black Redstart,blared1,0.1077,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240629_053500.wav,42
+4,Spectrogram 1,,,,,,Black Redstart,blared1,0.1235,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240629_070500.wav,30
+5,Spectrogram 1,,,,,,Black Redstart,blared1,0.1616,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_043502.wav,0
+6,Spectrogram 1,,,,,,Black Redstart,blared1,0.1417,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_043502.wav,36
+7,Spectrogram 1,,,,,,Black Redstart,blared1,0.7529,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_062000.wav,48
+8,Spectrogram 1,,,,,,Black Redstart,blared1,0.7605,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_062000.wav,54
+9,Spectrogram 1,,,,,,Black Redstart,blared1,0.738,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063000.wav,3
+10,Spectrogram 1,,,,,,Black Redstart,blared1,0.6988,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063000.wav,18
+11,Spectrogram 1,,,,,,Black Redstart,blared1,0.592,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063000.wav,30
+12,Spectrogram 1,,,,,,Black Redstart,blared1,0.7266,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,3
+13,Spectrogram 1,,,,,,Black Redstart,blared1,0.7637,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,6
+14,Spectrogram 1,,,,,,Black Redstart,blared1,0.2756,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,18
+15,Spectrogram 1,,,,,,Black Redstart,blared1,0.5099,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,24
+16,Spectrogram 1,,,,,,Black Redstart,blared1,0.5763,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,27
+17,Spectrogram 1,,,,,,Black Redstart,blared1,0.7989,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,30
+18,Spectrogram 1,,,,,,Black Redstart,blared1,0.9723,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,33
+19,Spectrogram 1,,,,,,Black Redstart,blared1,0.4261,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,42
+20,Spectrogram 1,,,,,,Black Redstart,blared1,0.8074,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,51
+21,Spectrogram 1,,,,,,Black Redstart,blared1,0.2117,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\100 liverpool st july 2\Data2\LIVERPOOLST_20240630_063500.wav,57

@@ -1,0 +1,15 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,12063,12066,0,12000,Black Redstart,blared1,0.2152,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240626_040502.wav,21
+2,Spectrogram 1,1,13833,13836,0,12000,Black Redstart,blared1,0.4455,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240626_063500.wav,36
+3,Spectrogram 1,1,16107,16110,0,12000,Black Redstart,blared1,0.1123,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240626_094500.wav,30
+4,Spectrogram 1,1,22791,22794,0,12000,Black Redstart,blared1,0.2007,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240626_190000.wav,54
+5,Spectrogram 1,1,29307,29310,0,12000,Black Redstart,blared1,0.1398,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240627_043002.wav,3
+6,Spectrogram 1,1,36726,36729,0,12000,Black Redstart,blared1,0.1147,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240627_145000.wav,12
+7,Spectrogram 1,1,64527,64530,0,12000,Black Redstart,blared1,0.2282,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240629_061500.wav,39
+8,Spectrogram 1,1,64866,64869,0,12000,Black Redstart,blared1,0.1173,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240629_064500.wav,18
+9,Spectrogram 1,1,81285,81288,0,12000,Black Redstart,blared1,0.1753,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240630_060000.wav,0
+10,Spectrogram 1,1,98313,98316,0,12000,Black Redstart,blared1,0.122,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240701_060000.wav,51
+11,Spectrogram 1,1,100074,100077,0,12000,Black Redstart,blared1,0.1052,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240701_083000.wav,12
+12,Spectrogram 1,1,101931,101934,0,12000,Black Redstart,blared1,0.1651,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240701_110500.wav,9
+13,Spectrogram 1,1,101943,101946,0,12000,Black Redstart,blared1,0.2957,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240701_110500.wav,21
+14,Spectrogram 1,1,114660,114663,0,12000,Black Redstart,blared1,0.144,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\barber surgeons july 2\Data2\BARBERSURGEO_20240702_051002.wav,15

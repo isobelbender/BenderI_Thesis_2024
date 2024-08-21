@@ -1,0 +1,5 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,10461,10464,0,12000,Black Redstart,blared1,0.1635,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\christchurch data\Data2\GREYFRIARS_20240619_042502.wav,51
+2,Spectrogram 1,1,21915,21918,0,12000,Black Redstart,blared1,0.1707,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\christchurch data\Data2\GREYFRIARS_20240619_202500.wav,15
+3,Spectrogram 1,1,27798,27801,0,12000,Black Redstart,blared1,0.202,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\christchurch data\Data2\GREYFRIARS_20240620_050002.wav,9
+4,Spectrogram 1,1,46713,46716,0,12000,Black Redstart,blared1,0.1317,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\christchurch data\Data2\GREYFRIARS_20240621_074000.wav,33

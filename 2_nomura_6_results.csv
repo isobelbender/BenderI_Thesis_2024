@@ -1,0 +1,26 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,6606,6609,0,12000,Black Redstart,blared1,0.1493,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240611_195500.wav,9
+2,Spectrogram 1,1,14046,14049,0,12000,Black Redstart,blared1,0.2054,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240612_064000.wav,12
+3,Spectrogram 1,1,15294,15297,0,12000,Black Redstart,blared1,0.1096,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240612_082500.wav,0
+4,Spectrogram 1,1,46305,46308,0,12000,Black Redstart,blared1,0.9815,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_041502.wav,21
+5,Spectrogram 1,1,46320,46323,0,12000,Black Redstart,blared1,0.9472,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_041502.wav,36
+6,Spectrogram 1,1,56052,56055,0,12000,Black Redstart,blared1,0.5203,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,24
+7,Spectrogram 1,1,56055,56058,0,12000,Black Redstart,blared1,0.8861,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,27
+8,Spectrogram 1,1,56058,56061,0,12000,Black Redstart,blared1,0.7135,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,30
+9,Spectrogram 1,1,56061,56064,0,12000,Black Redstart,blared1,0.6946,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,33
+10,Spectrogram 1,1,56064,56067,0,12000,Black Redstart,blared1,0.7896,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,36
+11,Spectrogram 1,1,56067,56070,0,12000,Black Redstart,blared1,0.1632,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,39
+12,Spectrogram 1,1,56076,56079,0,12000,Black Redstart,blared1,0.2181,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,48
+13,Spectrogram 1,1,56082,56085,0,12000,Black Redstart,blared1,0.749,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,54
+14,Spectrogram 1,1,56085,56088,0,12000,Black Redstart,blared1,0.5443,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_175000.wav,57
+15,Spectrogram 1,1,56196,56199,0,12000,Black Redstart,blared1,0.1151,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_180000.wav,48
+16,Spectrogram 1,1,56202,56205,0,12000,Black Redstart,blared1,0.59,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240614_180000.wav,54
+17,Spectrogram 1,1,66345,66348,0,12000,Black Redstart,blared1,0.1742,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240615_083500.wav,0
+18,Spectrogram 1,1,70128,70131,0,12000,Black Redstart,blared1,0.3396,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240615_135000.wav,3
+19,Spectrogram 1,1,70242,70245,0,12000,Black Redstart,blared1,0.1726,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240615_135500.wav,57
+20,Spectrogram 1,1,70896,70899,0,12000,Black Redstart,blared1,0.6513,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240615_145000.wav,51
+21,Spectrogram 1,1,72171,72174,0,12000,Black Redstart,blared1,0.274,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240615_164000.wav,6
+22,Spectrogram 1,1,72207,72210,0,12000,Black Redstart,blared1,0.6967,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240615_164000.wav,42
+23,Spectrogram 1,1,74490,74493,0,12000,Black Redstart,blared1,0.9468,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240615_195000.wav,45
+24,Spectrogram 1,1,101643,101646,0,12000,Black Redstart,blared1,0.4173,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240617_102500.wav,21
+25,Spectrogram 1,1,106179,106182,0,12000,Black Redstart,blared1,0.8567,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 1\nomura 6\Data2\NOMURA6_20240617_164000.wav,57

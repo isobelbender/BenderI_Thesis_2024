@@ -1,0 +1,210 @@
+---
+title: "Thesis_map"
+author: "Isobel Bender"
+date: "2024-08-18"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+#packages for mapping
+library(terra)
+library(sf)
+library(landscapemetrics)
+library(raster)
+library(graphics)
+library(png)
+```
+
+```{r Clearing the environment}
+rm(list = ls())
+```
+
+
+# LIDAR original calculations
+
+```{r read the lidar}
+#Read the LIDAR raster
+lidar_DTM <- rast("TQ38sw_DTM_1m.tif")
+print(lidar_DTM)
+plot(lidar_DTM[[1]], main = "Band 1")
+
+lidar_FZ_DTM <- rast("TQ38sw_FZ_DSM_1m.tif")
+print(lidar_FZ_DTM)
+plot(lidar_FZ_DTM[[1]], main = "Band 1")
+
+#subtract the ground level and the overall to get height
+lidar_height <- lidar_FZ_DTM-lidar_DTM
+print(lidar_height)
+plot(lidar_height[[1]],col = grey.colors(200, start=1, end=0), main = "Height Data")
+
+```
+
+```{r plot points}
+plot.new()
+
+#Read the point
+points <- st_read('points.shp')
+
+plot(lidar_height[[1]],col = grey.colors(200, start=1, end=0), main = "Height Data")
+plot(st_geometry(points), add=TRUE, pch= 20, cex=0.5, col = "red")
+```
+
+```{r make buffers}
+#make buffers 
+buffers50 <- st_buffer(points,50)
+buffers100 <- st_buffer(points,100)
+buffers150 <- st_buffer(points,150)
+buffers200 <- st_buffer(points,200)
+```
+
+```{r plot buffers}
+plot(lidar_height[[1]],col = grey.colors(200, start=1, end=0), main = "Height Data")
+plot(st_geometry(points), add=TRUE, pch= 20, cex=0.1, col = "red")
+plot(st_geometry(buffers50),add=TRUE)
+plot(st_geometry(buffers100),add=TRUE)
+plot(st_geometry(buffers150),add=TRUE)
+plot(st_geometry(buffers200),add=TRUE)
+```
+
+Extract the mean height, standard deviation of height, and max height for each buffer
+```{r extracting values from buffers }
+buffers50$mean <- extract(lidar_height,buffers50,fun=mean)
+buffers50$sd <- extract(lidar_height,buffers50,fun=sd)
+buffers50$max <- extract(lidar_height,buffers50,fun=max)
+
+buffers100$mean <- extract(lidar_height,buffers100,fun=mean)
+buffers100$sd <- extract(lidar_height,buffers100,fun=sd)
+buffers100$max <- extract(lidar_height,buffers100,fun=max)
+
+buffers150$mean <- extract(lidar_height,buffers150,fun=mean)
+buffers150$sd <- extract(lidar_height,buffers150,fun=sd)
+buffers150$max <- extract(lidar_height,buffers150,fun=max)
+
+buffers200$mean <- extract(lidar_height,buffers200,fun=mean)
+buffers200$sd <- extract(lidar_height,buffers200,fun=sd)
+buffers200$max <- extract(lidar_height,buffers200,fun=max)
+```
+
+Save just the values of importance into new data frames
+```{r save values}
+buffers50_df <- as.data.frame(buffers50)
+sites_50 <- buffers50_df[ ,c(1,13,14,15)]
+colnames(sites_50) <- c("Name","Mean_50","SD_50","Max_50")
+
+buffers100_df <- as.data.frame(buffers100)
+sites_100 <- buffers100_df[ ,c(1,13,14,15)]
+colnames(sites_100) <- c("Name","Mean_100","SD_100","Max_100")
+
+buffers150_df <- as.data.frame(buffers150)
+sites_150 <- buffers150_df[ ,c(1,13,14,15)]
+colnames(sites_150) <- c("Name","Mean_150","SD_150","Max_150")
+
+buffers200_df <- as.data.frame(buffers200)
+sites_200 <- buffers200_df[ ,c(1,13,14,15)]
+colnames(sites_200) <- c("Name","Mean_200","SD_200","Max_200")
+```
+
+```{r save values}
+sites_all <- merge(sites_50,sites_100,by="Name")
+sites_all <- merge(sites_all,sites_150,by="Name")
+sites_all <- merge(sites_all,sites_200,by="Name")
+
+#write.csv(sites_all,"lidar_sites_data.csv")
+```
+
+# The CoL Map 
+```{r satellite map}
+require(raster)
+satellite = brick('Satellite.tif')
+plotRGB(satellite, interpolate = TRUE)
+plot(st_geometry(points), add=TRUE, pch= 20, cex=0.1, col = "red")
+```
+
+```{r import google earth points etc}
+kml_file <- "~/Documents/R_work/Project/For Map.kml"
+spatial_data <- st_read(kml_file)
+layers <- st_layers(kml_file)
+print(layers)
+```
+
+```{r extract the files i want, transform them}
+green_roofs <- st_read(kml_file, layer = "green roofs")
+green_roofs_GB36  <- st_transform(green_roofs, crs = 27700)
+
+conv_roofs <- st_read(kml_file, layer = "conventional roofs")
+conv_roofs_GB36  <- st_transform(conv_roofs, crs = 27700)
+
+gardens <- st_read(kml_file, layer = "gardens")
+gardens_GB36  <- st_transform(gardens, crs = 27700)
+
+
+green_roofs_pts <- st_read(kml_file, layer = "green roofs points")
+green_roofs_pts_GB36  <- st_transform(green_roofs_pts, crs = 27700)
+
+conv_roofs_pts <- st_read(kml_file, layer = "conv roofs points")
+conv_roofs_pts_GB36  <- st_transform(conv_roofs_pts, crs = 27700)
+
+gardens_pts <- st_read(kml_file, layer = "garden points")
+gardens_pts_GB36  <- st_transform(gardens_pts, crs = 27700)
+
+CoL_boundaries <- st_read(kml_file, layer = "For Map")
+CoL_boundaries_GB36  <- st_transform(CoL_boundaries, crs = 27700)
+CoL_boundaries_GB36
+
+```
+
+```{r check the extent of the satellite}
+satellite
+#525000, 530000, 180000, 182500
+```
+
+```{r crop satellite}
+new_extent <- extent(530900, 534000, 180250, 183000)
+
+satellite_cropped <- crop(satellite,new_extent)
+
+```
+
+```{r make scale bar}
+
+scale_length <- 1000   
+scale_label <- "1 km"  
+x_position <- 531000
+y_position <- 180450 
+bar_height <- 10  
+
+rect_width <- 60  
+rect_height <- 30  
+```
+
+```{r customize axes}
+x_ticks <- seq(525000, 530000, by = 5000)  
+y_ticks <- seq(180000, 182500, by = 5000) 
+
+x_labels <- format(x_ticks, big.mark=",")
+y_labels <- format(y_ticks, big.mark=",")
+```
+
+```{r the final map}
+plotRGB(satellite_cropped, interpolate = TRUE, main="City of London Site Map",axes=FALSE)
+plot(st_geometry(CoL_boundaries_GB36), add=TRUE,border="red",lwd=3)
+plot(st_geometry(green_roofs_pts_GB36), add=TRUE, col="white",pch= 20, cex=2)
+plot(st_geometry(green_roofs_pts_GB36), add=TRUE, col="orange",pch= 20, cex=1.5)
+plot(st_geometry(gardens_pts_GB36), add=TRUE, col="white",pch= 20, cex=2)
+plot(st_geometry(gardens_pts_GB36), add=TRUE, col="springgreen2",pch= 20, cex=1.5)
+plot(st_geometry(conv_roofs_pts_GB36), add=TRUE, col="white",pch= 20, cex=2)
+plot(st_geometry(conv_roofs_pts_GB36), add=TRUE, col="dodgerblue1",pch= 20, cex=1.5)
+#Add legend
+legend(x=532700,y=182841.7, legend=c("Green Roofs", "Gardens", "Conventional Roofs", "City of London Boundaries"), 
+       col=c("orange", "springgreen2", "dodgerblue1","red"), pch=c(20,20,20,NA), lwd=c(NA, NA, NA, 2), pt.cex=1.5, 
+        text.col="black", cex=0.8, bg="white")
+#Add scale bar
+segments(x0=x_position, y0=y_position, x1=x_position + scale_length, y1=y_position, col="white", lwd=4)
+segments(x0=x_position, y0=y_position - bar_height, x1=x_position, y1=y_position + bar_height, col="white", lwd=2)
+segments(x0=x_position + scale_length, y0=y_position - bar_height, x1=x_position + scale_length, y1=y_position + bar_height, col="white", lwd=2)
+text(x=x_position + scale_length/2, y=y_position - 9 * bar_height, labels=scale_label, cex=1.1, col="white",font=2)
+```

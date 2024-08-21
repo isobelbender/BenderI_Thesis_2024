@@ -1,0 +1,24 @@
+﻿Index,site_codes,Site,Subset?,Num_detections,num_sample_detections,num_sample_detections _correct,Sample_accuracy,Sample_Avg_Confidence,Chosen_threshold,Chosen_accuracy,Chosen_sample_recall,Num_sample_used,Num_detections_used,Estimated_detections_correct,False_positives,False_negatives,Site_order
+1,liverpool,100 Liverpool,0,21,21,2,0.095,0.53,na,1,1,2,15,15,0,0,5
+2,botolphs,Botolphs,0,7,7,3,0.429,0.25,na,1,1,3,3,3,0,0,13
+3,christchurch,Christchurch,0,4,4,0,0,0.166,na,1,1,0,0,0,0,0,17
+4,cannon_bridge,Cannon Bridge,0,28,28,23,0.821,0.439,na,1,1,23,23,23,0,0,10
+5,guildhall,Guildhall,1,2491,30,30,1,0.552,0.1,1,1,30,2491,2491,0,0,4
+6,walbrooke,Walbrooke,0,9,9,3,0.333,0.755,na,1,1,3,3,3,0,0,3
+7,temple,Inner Temple,0,1,1,0,0,0.14,na,1,1,0,0,0,0,0,18
+8,pepys,Pepys,0,2,2,0,0,0.305,na,1,1,0,1,1,0,0,12
+9,charterhouse,Charterhouse,0,1,1,1,1,0.963,na,1,1,1,1,1,0,0,1
+10,fenchurch,Fenchurch,0,1,1,0,0,0.1161,na,1,1,0,0,0,0,0,19
+11,wood_st,Wood St,1,189,30,30,1,0.545,0.1,1,1,30,189,189,0,0,7
+12,barber_surgeons,Barber Surgeons,0,14,14,0,0,0.184,na,1,1,0,0,0,0,0,16
+13,cleary,Cleary Gardens,1,49,30,4,0.133,0.295,0.28,0.6,0.75,5,10,6.66,2,1,15
+14,KCL,KCL,1,438,30,30,1,0.565,0.1,1,1,30,438,438,0,0,5
+15,roman_wall,Roman Wall,0,8,8,0,0,0.236,na,1,1,0,0,0,0,0,14
+16,weils,Weils,1,673,30,30,1,0.571,0.1,1,1,30,379,379,0,0,6
+17,dunstan,Dunstan,0,6,6,0,0,0.331,na,1,1,0,0,0,0,0,11
+18,nomura_6,Nomura 6,0,25,25,3,0.12,0.516,na,1,1,3,23,23,0,0,8
+19,nomura_11,Nomura 11,1,41,30,28,0.933,0.506,0.12,1,0.85,30,35,35,0,3,9
+20,b_n_b,Bird and Bird,0,11,11,11,1,0.761,na,1,1,11,11,11,0,0,2
+21,london_wall,London Wall,0,0,0,0,na,na,na,1,1,0,0,0,0,0,
+,,,,,,,,,,,,,,,,,
+,,,,,,,,,,,,200,3622,,,,

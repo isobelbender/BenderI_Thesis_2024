@@ -1,0 +1,3008 @@
+---
+title: "Thesis_code"
+author: "Isobel Bender"
+date: "2024-08-16"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+#Set Up 
+
+```{r Packages}
+#install.packages("extrafont")
+#install.packages("RColorBrewer")
+#install.packages("forcats")
+#install.packages('plotrix')
+#install.packages('tidyr')
+#install.packages("betareg")
+#install.packages("fitdistrplus")
+#install.packages('performance')
+#install.packages('DHARMa')
+#install.packages('spatialRF')
+#install.packages('emmeans')
+#install.packages('MuMIn')
+#install.packages("ggpubr")
+#install.packages('spatialRF')
+#install.packages('grid')
+#install.packages('ggimage')
+#install.packages("statmod")
+#install.packages('terra')
+#install.packages('sf')
+#install.packages('landscapemetrics')
+#install.packages('raster')
+#install.packages('graphics')
+#install.packages('lme4')
+#install.packages('Matrix')
+```
+
+```{r Requiring Packages}
+require(dplyr)
+require(ggplot2)
+#for viridis colour palette
+require(viridis)
+#for grid_arrange
+require(gridExtra)
+#for fonts
+require(extrafont)
+#for colours 
+library(RColorBrewer)
+#for re-ordering factors for ggplot
+library(forcats)
+#for calculating SE
+library(plotrix)
+#for function gather
+library(tidyr)
+#for beta regression models
+require(betareg)
+#for fitting distributions
+require(fitdistrplus)
+#for checking zero inflation
+require(performance)
+require(DHARMa)
+#for vif calculations
+require(spatialRF)
+#for pairwise comparisons
+require(emmeans)
+#this is for GLM mixed models
+require('MuMIn')
+#for graphing
+require(ggpubr)
+#
+require(spatialRF)
+#for arranging
+library(grid)
+#for the picture
+library(ggimage)
+#stat mod
+require(statmod)
+#for glm mixed models
+library(lme4)
+library(Matrix)
+
+```
+
+```{r Clearing the environment}
+rm(list = ls())
+```
+
+```{r Inputting the Data}
+barber_surgeons <- read.csv('2_barber_surgeons_results.csv')
+guildhall <- read.csv('2_guildhall_results.csv')
+walbrooke <- read.csv('2_walbrooke_results.csv')
+wood_st <- read.csv('2_wood_st_results.csv')
+cannon_bridge <- read.csv('2_cannon_bridge_results.csv')
+pepys <- read.csv('2_pepys_results.csv')
+charterhouse <- read.csv('2_charterhouse_results.csv')
+botolphs <- read.csv('2_botolphs_results.csv')
+temple <- read.csv('2_temple_results.csv')
+liverpool <- read.csv('2_liverpool_results.csv')
+cleary <- read.csv('2_cleary_results.csv')
+KCL <- read.csv('2_KCL_results.csv')
+weils <- read.csv('2_weils_results.csv')
+nomura_6 <- read.csv('2_nomura_6_results.csv')
+nomura_11 <- read.csv('2_nomura_11_results.csv')
+b_n_b <- read.csv('2_bird_and_bird_results.csv')
+fenchurch <- read.csv('2_fenchurch_results.csv')
+christchurch <- read.csv('2_christchurch_results.csv')
+roman_wall <- read.csv('2_roman_wall_results.csv')
+dunstan <- read.csv('2_dunstan_new.csv')
+```
+
+#All detections, validating, visualisation
+
+```{r Making one df of all detections}
+#this binds all the data into one total data frame of all the detections
+all_data_no_validation <- rbind(barber_surgeons,guildhall,walbrooke,wood_st,cannon_bridge,pepys,charterhouse,botolphs,temple,liverpool,cleary,KCL,weils,nomura_6,nomura_11,b_n_b,fenchurch,christchurch,roman_wall,dunstan)
+
+# LOOP to add site codes and names using "grepl"
+  #adding site codes and names
+  all_data_no_validation$site_codes <- c(nrow(all_data_no_validation))
+  all_data_no_validation$site_names <- c(nrow(all_data_no_validation))
+  
+  #making a vector of the total number of detections
+  total <- c(1:nrow(all_data_no_validation))
+
+#the loop itself adding site codes
+for (i in total) {
+  if (grepl("BARBER", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "barber_surgeons"
+    all_data_no_validation$site_names[i] <- "Barber Surgeons"
+  }
+  if (grepl("GUILDHALL", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "guildhall"
+    all_data_no_validation$site_names[i] <- "Guildhall"
+  }
+  if (grepl("WARBROOK", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "walbrooke"
+    all_data_no_validation$site_names[i] <- "Walbrooke"
+  }
+  if (grepl("WOOD", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "wood_st"
+    all_data_no_validation$site_names[i] <- "Wood St"
+  }
+  if (grepl("CANNON", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "cannon_bridge"
+    all_data_no_validation$site_names[i] <- "Cannon Bridge"
+  }
+  if (grepl("SEEING", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "pepys"
+    all_data_no_validation$site_names[i] <- "Pepys"
+  }
+  if (grepl("CHARTER", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "charterhouse"
+    all_data_no_validation$site_names[i] <- "Charterhouse"
+  }
+  if (grepl("BOTOLPH", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "botolphs"
+    all_data_no_validation$site_names[i] <- "St Botolphs"
+  }
+  if (grepl("TEMPLE", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "temple"
+    all_data_no_validation$site_names[i] <- "Temple"
+  }
+  if (grepl("LIVERPOOL", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "liverpool"
+    all_data_no_validation$site_names[i] <- "100 Liverpool"
+  }
+  if (grepl("CLEARY", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "cleary"
+    all_data_no_validation$site_names[i] <- "Cleary Gardens"
+  }
+  if (grepl("KCL", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "KCL"
+    all_data_no_validation$site_names[i] <- "KCL"
+  }
+  if (grepl("FETTER", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "weils"
+    all_data_no_validation$site_names[i] <- "Weils"
+  }
+  if (grepl("NOMURA6", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "nomura_6"
+    all_data_no_validation$site_names[i] <- "Nomura 6"
+  }
+  if (grepl("NOMURA_", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "nomura_11"
+    all_data_no_validation$site_names[i] <- "Nomura 11"
+  }
+  if (grepl("BIRDBIRD", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "b_n_b"
+    all_data_no_validation$site_names[i] <- "Bird and Bird"
+  }
+  if (grepl("FENCHURCH", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "fenchurch"
+    all_data_no_validation$site_names[i] <- "120 Fenchurch"
+  }
+  if (grepl("ROMAN", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "roman_wall"
+    all_data_no_validation$site_names[i] <- "Roman Wall"
+  }
+  if (grepl("GREYFRIARS", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "christchurch"
+    all_data_no_validation$site_names[i] <- "Christchurch"
+  }
+  if (grepl("DUSTEN", all_data_no_validation[i,11], fixed=TRUE)==TRUE){
+    all_data_no_validation$site_codes[i] <- "dunstan"
+    all_data_no_validation$site_names[i] <- "Dunstan"
+  }
+}
+```
+
+```{r Descriptive stats of detections }
+unique(all_data_no_validation$site_codes)
+nrow(all_data_no_validation)
+print("Descriptive Stats Full Data Set")
+mean(all_data_no_validation$Confidence)
+std.error(all_data_no_validation$Confidence)
+sd(all_data_no_validation$Confidence)
+range(all_data_no_validation$Confidence)
+```
+
+```{r Df of detections grouped by site, descriptive stats}
+
+#summarizing the full df by site 
+all_data_no_validation_by_site <- all_data_no_validation %>%
+  group_by(site_codes) %>%
+  summarize(
+    Mean = mean(Confidence, na.rm = TRUE),
+    STD = sd(Confidence, na.rm = TRUE),
+    Count = n()
+  )
+
+#adding a blank row for the site with no detections 
+all_data_no_validation_by_site[nrow(all_data_no_validation_by_site) + 1,] <- list("london_wall",NA, NA, 0)
+
+print("Descriptive Count Stats by Sites")
+mean(all_data_no_validation_by_site$Count)
+std.error(all_data_no_validation_by_site$Count)
+sd(all_data_no_validation_by_site$Count)
+range(all_data_no_validation_by_site$Count)
+
+print("Descriptive Confidence Stats by Sites")
+mean(all_data_no_validation_by_site$Mean,na.rm = TRUE)
+std.error(all_data_no_validation_by_site$Mean,na.rm = TRUE)
+sd(all_data_no_validation_by_site$Mean,na.rm = TRUE)
+range(all_data_no_validation_by_site$Mean,na.rm = TRUE)
+
+```
+
+```{r Graph: Confidence of detections by site}
+group_detections <- all_data_no_validation %>%
+  group_by(site_codes) %>%
+  mutate(detections = length(site_codes))
+
+my_breaks = c(2, 10, 50, 250, 1250)
+
+confidence_by_site_plot <- ggplot(group_detections, aes(factor(reorder(site_codes,-Confidence)), Confidence)) +
+  geom_boxplot(aes(fill = detections))+
+  scale_fill_gradientn(name="# of Detections", colours=c("red","yellow","green","blue"), trans = "log",
+                        breaks = my_breaks, labels = my_breaks)+
+  scale_x_discrete(labels=c("Charterhouse","Bird and Bird","Walbrooke","Guildhall","KCL","100 Liverpool","Weils","Wood St","Nomura 6","Nomura 11","Cannon Bridge","Dunstan","Pepys","Botolphs","Roman Wall","Cleary Gardens","Barber Surgeons","Christchurch","Temple","Fenchurch"))+
+  scale_y_continuous(name="Confidence Scores",limits=c(0,1),breaks=seq(0,1,by=0.1))+
+  labs(
+        x ="Site Name", y = "Confidence Scores")+
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=13),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=13),
+        axis.text.x = element_text(angle=45, hjust=1, size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        legend.text=element_text(size=8))
+
+confidence_by_site_plot
+```
+
+#Site by Site Validation
+## Barber Surgeons
+
+```{r Barber Surgeons}
+#Note - all detections are incorrect, so I just added "0" in the final data compiling  
+
+barber_surgeons <- barber_surgeons[-c(1:14), ]
+```
+
+## Guildhall 
+```{r Guildhall}
+#More than 30 detections, so I sample 30 of them. This is already done so I have a "#" over these codes so as not to re-create them
+
+#making a vector of the detections to sample 
+#guildhall_sample_vector <- sample(c(1:2491),size=30)
+
+#subsetting the df with only those samples 
+#guildhall_sample_2 <- guildhall[guildhall_sample_vector, ]
+
+#writing a file of the samples 
+#write.csv(guildhall_sample_2,"guildhall_sample_2.csv")
+
+#Results:
+#All randomly sampled were correct, so we give a threshold of 0.1 (all of them)
+
+#to add columns for unique minute and date 
+path_length <- nchar(guildhall$Begin.Path[1])
+guildhall$File.Name <- substr(guildhall$Begin.Path, (path_length-18),(path_length-4))
+guildhall$Minute <- substr(guildhall$File.Name, 1,15)
+guildhall$Date <- substr(guildhall$File.Name, 1,8)
+
+#making a blank presence absence table for every unique minute
+unique(guildhall$Common.Name)
+length(unique(guildhall$Minute))
+
+pa.df.guildhall <- data.frame(matrix(
+  ncol=length(unique(guildhall$Common.Name)),
+              nrow=length(unique(guildhall$Minute))))
+
+colnames(pa.df.guildhall) <- unique(guildhall$Common.Name)
+
+rownames(pa.df.guildhall)<- unique(guildhall$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(guildhall$Minute)
+uniq.bird <- unique(guildhall$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#This code was originally written to look at all bird species, before I re-ran the data to just detect the Black Redstart. I've kept the code like this for future usage, if needed.
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- guildhall[uniq.min[i]==guildhall$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.guildhall[i,g] <- 1
+  } else{ 
+    (pa.df.guildhall[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.guildhall <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.guildhall) <- uniq.bird
+pa.sum.guildhall$Sum <- colSums(pa.df.guildhall)
+```
+
+## Fenchurch
+The one detection was incorrect. 
+```{r}
+fenchurch <- fenchurch[-1, ]
+```
+
+
+##Walbrooke
+It gave 9 detections. I manually listened to all of them, and 3 were correct. I manually select those that are correct.
+
+```{r Walbrooke}
+#manually selecting the three correct results
+walbrooke <- walbrooke[c(7,8,9), ]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(walbrooke$Begin.Path[1])
+walbrooke$File.Name <- substr(walbrooke$Begin.Path, (path_length-18),(path_length-4))
+walbrooke$Minute <- substr(walbrooke$File.Name, 1,15)
+walbrooke$Date <- substr(walbrooke$File.Name, 1,8)
+
+#presence absence table
+pa.df.walbrooke <- data.frame(matrix(
+  ncol=length(unique(walbrooke$Common.Name)),
+              nrow=length(unique(walbrooke$Minute))))
+
+colnames(pa.df.walbrooke) <- unique(walbrooke$Common.Name)
+rownames(pa.df.walbrooke)<- unique(walbrooke$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(walbrooke$Minute)
+uniq.bird <- unique(walbrooke$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- walbrooke[uniq.min[i]==walbrooke$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.walbrooke[i,g] <- 1
+  } else{ 
+    (pa.df.walbrooke[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.walbrooke <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.walbrooke) <- uniq.bird
+pa.sum.walbrooke$Sum <- colSums(pa.df.walbrooke)
+
+```
+
+##Wood St
+```{r Wood St}
+#Repeating the random sampling as in Guildhall code.
+#wood_sample_vector <- sample(c(1:189),size=30)
+#wood_sample_2 <- wood_st[wood_sample_vector, ]
+#write.csv(wood_sample_2,"wood_st_sample_2.csv")
+
+#all were correct, so the threshold is 0.1 for this site, all included
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(wood_st$Begin.Path[1])
+wood_st$File.Name <- substr(wood_st$Begin.Path, (path_length-18),(path_length-4))
+wood_st$Minute <- substr(wood_st$File.Name, 1,15)
+wood_st$Date <- substr(wood_st$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.wood_st <- data.frame(matrix(
+  ncol=length(unique(wood_st$Common.Name)),
+              nrow=length(unique(wood_st$Minute))))
+
+colnames(pa.df.wood_st) <- unique(wood_st$Common.Name)
+rownames(pa.df.wood_st)<- unique(wood_st$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(wood_st$Minute)
+uniq.bird <- unique(wood_st$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- wood_st[uniq.min[i]==wood_st$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.wood_st[i,g] <- 1
+  } else{ 
+    (pa.df.wood_st[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.wood_st <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.wood_st) <- uniq.bird
+pa.sum.wood_st$Sum <- colSums(pa.df.wood_st)
+```
+
+## Cannon Bridge
+Only 28 samples. 5 were incorrect 
+```{r Cannon Bridge}
+#manually removing the incorrect results
+cannon_bridge <- cannon_bridge[-c(1,17,19,22,23), ]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(cannon_bridge$Begin.Path[1])
+cannon_bridge$File.Name <- substr(cannon_bridge$Begin.Path, (path_length-18),(path_length-4))
+cannon_bridge$Minute <- substr(cannon_bridge$File.Name, 1,15)
+cannon_bridge$Date <- substr(cannon_bridge$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.cannon_bridge <- data.frame(matrix(
+  ncol=length(unique(cannon_bridge$Common.Name)),
+              nrow=length(unique(cannon_bridge$Minute))))
+
+colnames(pa.df.cannon_bridge) <- unique(cannon_bridge$Common.Name)
+rownames(pa.df.cannon_bridge)<- unique(cannon_bridge$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(cannon_bridge$Minute)
+uniq.bird <- unique(cannon_bridge$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- cannon_bridge[uniq.min[i]==cannon_bridge$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.cannon_bridge[i,g] <- 1
+  } else{ 
+    (pa.df.cannon_bridge[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.cannon_bridge <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.cannon_bridge) <- uniq.bird
+pa.sum.cannon_bridge$Sum <- colSums(pa.df.cannon_bridge)
+```
+
+##Pepys
+2 detections. 1 was correct.
+```{r Pepys}
+#manually selecting the one correct results
+pepys <- pepys[1, ]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(pepys$Begin.Path[1])
+pepys$File.Name <- substr(pepys$Begin.Path, (path_length-18),(path_length-4))
+pepys$Minute <- substr(pepys$File.Name, 1,15)
+pepys$Date <- substr(pepys$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.pepys <- data.frame(matrix(
+  ncol=length(unique(pepys$Common.Name)),
+              nrow=length(unique(pepys$Minute))))
+
+colnames(pa.df.pepys) <- unique(pepys$Common.Name)
+rownames(pa.df.pepys)<- unique(pepys$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(pepys$Minute)
+uniq.bird <- unique(pepys$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- pepys[uniq.min[i]==pepys$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.pepys[i,g] <- 1
+  } else{ 
+    (pa.df.pepys[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.pepys <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.pepys) <- uniq.bird
+pa.sum.pepys$Sum <- colSums(pa.df.pepys)
+
+
+```
+
+##Charterhouse
+1 detection, it was correct
+```{r Charterhouse}
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(charterhouse$Begin.Path[1])
+charterhouse$File.Name <- substr(charterhouse$Begin.Path, (path_length-18),(path_length-4))
+charterhouse$Minute <- substr(charterhouse$File.Name, 1,15)
+charterhouse$Date <- substr(charterhouse$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.charterhouse <- data.frame(matrix(
+  ncol=length(unique(charterhouse$Common.Name)),
+              nrow=length(unique(charterhouse$Minute))))
+
+colnames(pa.df.charterhouse) <- unique(charterhouse$Common.Name)
+rownames(pa.df.charterhouse)<- unique(charterhouse$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(charterhouse$Minute)
+uniq.bird <- unique(charterhouse$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- charterhouse[uniq.min[i]==charterhouse$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.charterhouse[i,g] <- 1
+  } else{ 
+    (pa.df.charterhouse[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.charterhouse <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.charterhouse) <- uniq.bird
+pa.sum.charterhouse$Sum <- colSums(pa.df.charterhouse)
+
+```
+
+##Liverpool
+21 detections, 2 were incorrect. 
+```{r Liverpool}
+#manually removing the incorrect results
+liverpool <- liverpool[-c(3,8), ]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(liverpool$Begin.Path[1])
+liverpool$File.Name <- substr(liverpool$Begin.Path, (path_length-18),(path_length-4))
+liverpool$Minute <- substr(liverpool$File.Name, 1,15)
+liverpool$Date <- substr(liverpool$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.liverpool <- data.frame(matrix(
+  ncol=length(unique(liverpool$Common.Name)),
+              nrow=length(unique(liverpool$Minute))))
+
+colnames(pa.df.liverpool) <- unique(liverpool$Common.Name)
+rownames(pa.df.liverpool)<- unique(liverpool$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(liverpool$Minute)
+uniq.bird <- unique(liverpool$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- liverpool[uniq.min[i]==liverpool$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.liverpool[i,g] <- 1
+  } else{ 
+    (pa.df.liverpool[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.liverpool <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.liverpool) <- uniq.bird
+pa.sum.liverpool$Sum <- colSums(pa.df.liverpool)
+
+
+```
+
+##Botolphs
+7 detections, 3 were correct.
+```{r Botolphs}
+#manually selecting the  correct results
+botolphs <- botolphs[c(1:3), ]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(botolphs$Begin.Path[1])
+botolphs$File.Name <- substr(botolphs$Begin.Path, (path_length-18),(path_length-4))
+botolphs$Minute <- substr(botolphs$File.Name, 1,15)
+botolphs$Date <- substr(botolphs$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.botolphs <- data.frame(matrix(
+  ncol=length(unique(botolphs$Common.Name)),
+              nrow=length(unique(botolphs$Minute))))
+
+colnames(pa.df.botolphs) <- unique(botolphs$Common.Name)
+rownames(pa.df.botolphs)<- unique(botolphs$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(botolphs$Minute)
+uniq.bird <- unique(botolphs$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- botolphs[uniq.min[i]==botolphs$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.botolphs[i,g] <- 1
+  } else{ 
+    (pa.df.botolphs[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.botolphs <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.botolphs) <- uniq.bird
+pa.sum.botolphs$Sum <- colSums(pa.df.botolphs)
+
+
+```
+
+##Temple
+1 detection, it was incorrect.
+```{r Temple}
+#none were correct
+temple <- temple[-1, ]
+```
+
+## Christchurch
+4 detections, all incorrect. 
+```{r}
+christchurch <- christchurch[-c(1:4), ]
+```
+
+
+##Cleary
+49 observations. Sampled 30, made a threshold of 0.28
+```{r Cleary}
+#cleary_sample_vector <- sample(c(1:49),size=30)
+#cleary_sample_2 <- cleary[cleary_sample_vector, ]
+#write.csv(cleary_sample_2,"cleary_sample_2.csv")
+
+## From my randomized 30, only 4 were correct. I got the highest precision at 0.28, and recall is 75% 
+
+#Add the threshold
+cleary2 <- cleary[cleary$Confidence>=0.28,]
+#this brings it from 49 to 10 observations
+
+#Calculate how many were removed
+removed_cleary <- nrow(cleary)-nrow(cleary2)
+#removed 39 observations
+
+#Remove them from the actual dataset 
+cleary <- cleary[cleary$Confidence>=0.28,]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(cleary$Begin.Path[1])
+cleary$File.Name <- substr(cleary$Begin.Path, (path_length-18),(path_length-4))
+cleary$Minute <- substr(cleary$File.Name, 1,15)
+cleary$Date <- substr(cleary$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.cleary <- data.frame(matrix(
+  ncol=length(unique(cleary$Common.Name)),
+              nrow=length(unique(cleary$Minute))))
+
+colnames(pa.df.cleary) <- unique(cleary$Common.Name)
+rownames(pa.df.cleary)<- unique(cleary$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(cleary$Minute)
+uniq.bird <- unique(cleary$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- cleary[uniq.min[i]==cleary$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.cleary[i,g] <- 1
+  } else{ 
+    (pa.df.cleary[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.cleary <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.cleary) <- uniq.bird
+pa.sum.cleary$Sum <- colSums(pa.df.cleary)
+```
+
+## KCL 
+438 detections. Sampled 30, all correct.
+```{r KCL}
+# Sampling code
+#KCL_sample_vector <- sample(c(1:438),size=30)
+#KCL_sample_2 <- KCL[KCL_sample_vector, ]
+#write.csv(KCL_sample_2,"KCL_sample_2.csv")
+
+#All are correct, so The threshold is 0.1 and above, all are included
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(KCL$Begin.Path[1])
+KCL$File.Name <- substr(KCL$Begin.Path, (path_length-18),(path_length-4))
+KCL$Minute <- substr(KCL$File.Name, 1,15)
+KCL$Date <- substr(KCL$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+unique(KCL$Common.Name)
+length(unique(KCL$Minute))
+
+pa.df.KCL <- data.frame(matrix(
+  ncol=length(unique(KCL$Common.Name)),
+              nrow=length(unique(KCL$Minute))))
+
+colnames(pa.df.KCL) <- unique(KCL$Common.Name)
+
+rownames(pa.df.KCL)<- unique(KCL$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(KCL$Minute)
+uniq.bird <- unique(KCL$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- KCL[uniq.min[i]==KCL$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.KCL[i,g] <- 1
+  } else{ 
+    (pa.df.KCL[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.KCL <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.KCL) <- uniq.bird
+pa.sum.KCL$Sum <- colSums(pa.df.KCL)
+
+```
+
+## Roman Wall
+8 observations, none were correct. Manually added "0" 
+
+```{r}
+roman_wall <- roman_wall[-c(1:8), ]
+```
+
+
+## 60 London Wall
+No observations
+
+## Weils
+673 observations
+```{r Weils}
+
+#Randomly sample 30 detections and save a file of them 
+#weils_sample_vector <- sample(c(1:673),size=30)
+#weils_sample_2 <- weils[weils_sample_vector, ]
+#write.csv(weils_sample_2,"weils_sample_2.csv")
+
+#All were correct 
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(weils$Begin.Path[1])
+weils$File.Name <- substr(weils$Begin.Path, (path_length-18),(path_length-4))
+weils$Minute <- substr(weils$File.Name, 1,15)
+weils$Date <- substr(weils$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+unique(weils$Common.Name)
+length(unique(weils$Minute))
+
+pa.df.weils <- data.frame(matrix(
+  ncol=length(unique(weils$Common.Name)),
+              nrow=length(unique(weils$Minute))))
+
+colnames(pa.df.weils) <- unique(weils$Common.Name)
+
+rownames(pa.df.weils)<- unique(weils$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(weils$Minute)
+uniq.bird <- unique(weils$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- weils[uniq.min[i]==weils$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.weils[i,g] <- 1
+  } else{ 
+    (pa.df.weils[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.weils <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.weils) <- uniq.bird
+pa.sum.weils$Sum <- colSums(pa.df.weils)
+
+```
+
+## Dunstan
+6 observations, none correct
+```{r}
+dunstan <- dunstan[-c(1:6), ]
+```
+
+
+## Nomura 6 
+25 detections, 2 incorrect.
+```{r Nomura 6 }
+
+#manually removing the two incorrect results
+nomura_6 <- nomura_6[-c(17,18), ]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(nomura_6$Begin.Path[1])
+nomura_6$File.Name <- substr(nomura_6$Begin.Path, (path_length-18),(path_length-4))
+nomura_6$Minute <- substr(nomura_6$File.Name, 1,15)
+nomura_6$Date <- substr(nomura_6$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.nomura_6 <- data.frame(matrix(
+  ncol=length(unique(nomura_6$Common.Name)),
+              nrow=length(unique(nomura_6$Minute))))
+
+colnames(pa.df.nomura_6) <- unique(nomura_6$Common.Name)
+rownames(pa.df.nomura_6)<- unique(nomura_6$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(nomura_6$Minute)
+uniq.bird <- unique(nomura_6$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- nomura_6[uniq.min[i]==nomura_6$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.nomura_6[i,g] <- 1
+  } else{ 
+    (pa.df.nomura_6[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.nomura_6 <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.nomura_6) <- uniq.bird
+pa.sum.nomura_6$Sum <- colSums(pa.df.nomura_6)
+
+```
+
+## Nomura 11
+```{r Nomura 11}
+#Randomly sample 30 detections and save a file of them 
+#nomura_11_sample_vector <- sample(c(1:41),size=30)
+#nomura_11_sample_2 <- nomura_11[nomura_11_sample_vector, ]
+#write.csv(nomura_11_sample_2,"nomura_11_sample_2.csv")
+
+#from randomized 30, 2 were incorrect, the lowest threshold to give the highest accuracy is 0.12 which gives 100% accuracy (0.11 gives 92.6%, 0.10 gives 93.3%)
+
+nomura_11_2 <- nomura_11[nomura_11$Confidence>=0.12,]
+#this brings it from 41 to 35 observations
+
+removed_nomura_11 <- nrow(nomura_11)-nrow(nomura_11_2)
+#removed 6
+
+nomura_11 <- nomura_11[nomura_11$Confidence>=0.12,]
+
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(nomura_11$Begin.Path[1])
+nomura_11$File.Name <- substr(nomura_11$Begin.Path, (path_length-18),(path_length-4))
+nomura_11$Minute <- substr(nomura_11$File.Name, 1,15)
+nomura_11$Date <- substr(nomura_11$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+unique(nomura_11$Common.Name)
+length(unique(nomura_11$Minute))
+
+pa.df.nomura_11 <- data.frame(matrix(
+  ncol=length(unique(nomura_11$Common.Name)),
+              nrow=length(unique(nomura_11$Minute))))
+
+colnames(pa.df.nomura_11) <- unique(nomura_11$Common.Name)
+
+rownames(pa.df.nomura_11)<- unique(nomura_11$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(nomura_11$Minute)
+uniq.bird <- unique(nomura_11$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- nomura_11[uniq.min[i]==nomura_11$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.nomura_11[i,g] <- 1
+  } else{ 
+    (pa.df.nomura_11[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.nomura_11 <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.nomura_11) <- uniq.bird
+pa.sum.nomura_11$Sum <- colSums(pa.df.nomura_11)
+
+```
+
+## Bird and Bird 
+11 observations, they were  all correct
+```{r Bird and Bird}
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+path_length <- nchar(b_n_b$Begin.Path[1])
+b_n_b$File.Name <- substr(b_n_b$Begin.Path, (path_length-18),(path_length-4))
+b_n_b$Minute <- substr(b_n_b$File.Name, 1,15)
+b_n_b$Date <- substr(b_n_b$File.Name, 1,8)
+
+#make a presence absence table for all the birds and every unique minute
+pa.df.b_n_b <- data.frame(matrix(
+  ncol=length(unique(b_n_b$Common.Name)),
+              nrow=length(unique(b_n_b$Minute))))
+
+colnames(pa.df.b_n_b) <- unique(b_n_b$Common.Name)
+rownames(pa.df.b_n_b)<- unique(b_n_b$Minute)
+
+#making vectors of all the unique minutes and birds 
+uniq.min <- unique(b_n_b$Minute)
+uniq.bird <- unique(b_n_b$Common.Name)
+
+#getting the length of those vectors 
+x <- length(uniq.min)
+y <- length(uniq.bird)
+
+#loop for all birds
+#g and y is looping through the length of the list of unique birds 
+# i and x is looping through the length of the list of unique minutes
+for(g in 1:y){
+  for(i in 1:x){
+  temp <- b_n_b[uniq.min[i]==b_n_b$Minute,]
+  if(any(temp$Common.Name==uniq.bird[g])) { 
+  pa.df.b_n_b[i,g] <- 1
+  } else{ 
+    (pa.df.b_n_b[i,g] <- 0)
+  }
+}
+}
+
+#this gives a sum of the number of minutes that bird appears in for all the birds 
+pa.sum.b_n_b <- data.frame(matrix(ncol=0, nrow=y))
+row.names(pa.sum.b_n_b) <- uniq.bird
+pa.sum.b_n_b$Sum <- colSums(pa.df.b_n_b)
+
+```
+
+
+#Total table
+Here I make all_sites, a total table with all variables for each site. 
+```{r Vector of redstart minutes per site}
+#Again, this was written for multiple bird species and I saved this code. Note - sites with 0 minutes were manually put in.
+redstart_minutes <- c(pa.sum.walbrooke["Black Redstart", ],
+                      0, #fenchurch
+                      pa.sum.guildhall["Black Redstart", ],
+                      pa.sum.wood_st["Black Redstart", ],
+                      pa.sum.pepys["Black Redstart", ],
+                      pa.sum.b_n_b["Black Redstart", ],
+                      pa.sum.cannon_bridge["Black Redstart", ],
+                      pa.sum.liverpool["Black Redstart", ], 
+                      pa.sum.cleary["Black Redstart", ],
+                      pa.sum.nomura_6["Black Redstart", ],
+                      pa.sum.nomura_11["Black Redstart", ],
+                      0, ## dunstan
+                      0, ## christchurch
+                      0, ## barber surgeons
+                      pa.sum.charterhouse["Black Redstart", ],
+                      0, #temple
+                      pa.sum.botolphs["Black Redstart", ],
+                      pa.sum.KCL["Black Redstart", ],
+                      0, #london wall
+                      0, #roman wall
+                      pa.sum.weils["Black Redstart", ]
+                      )
+```
+
+```{r Adding the main columns}
+#making a blank df 
+all_sites <- data.frame(matrix(ncol=0, nrow=21))
+
+#vector to add in the site names, in order
+site_names <- c("Walbrooke", "Fenchurch", "Guildhall", "Wood_St", "Pepys", "Bird_and_bird", "Cannon_Bridge","100 Liverpool", "Cleary","Nomura_6", "Nomura_11", "Dunstan", "Christchurch","Barber Surgeons", "79 Charterhouse","Inner Temple", "Botolphs", "KCL","60 London Wall", "Roman Wall", "Weils")
+
+#vector to adding in the site codes, in order
+site_codes <- c("walbrooke", "fenchurch", "guildhall", "wood_st", "pepys", "b_n_b", "cannon_bridge","liverpool", "cleary","nomura_6", "nomura_11", "dunstan", "christchurch","barber_surgeons", "charterhouse","temple", "botolphs", "KCL","london_wall", "roman_wall", "weils")
+
+#adding these vectors to the df
+all_sites$site_names <- site_names
+all_sites$site_codes <- site_codes
+
+#adding Type of Site
+all_sites$Type <- c("conventional", "intensive", "extensive","extensive", "garden","extensive", "intensive", "extensive", "garden","intensive", "extensive", "garden","garden","garden","conventional","garden","garden", "conventional","extensive","garden","intensive")
+
+#making a column of roof vs. garden
+all_sites$roof <- c(1:21)
+
+for (i in 1:21){
+  if (all_sites$Type[i] == "garden"){
+    all_sites$roof[i]<- "garden"
+  }
+  else {
+    all_sites$roof[i]<- "roof"
+  }
+}
+
+#making a column of green roof v garden v conventional
+all_sites$green_roof <- c(1:21)
+
+for (i in 1:21){
+  if (all_sites$Type[i] == "garden"){
+    all_sites$green_roof[i]<- "garden"
+  }
+  if (all_sites$Type[i] == "conventional"){
+    all_sites$green_roof[i]<- "conventional"
+  }
+  if (all_sites$Type[i] == "extensive" | all_sites$Type[i] == "intensive"){
+    all_sites$green_roof[i]<- "green_roof"
+  }
+}
+
+#column for total recording minutes (number of files I put into BirdNET)
+all_sites$Recording_Minutes <- c(2010, 1998, 1964,2002,2003,1981,1984,1961,2015,2016,2018,2013,1977,2011,3442,1987,1985,1987,1988,1967,1980)
+
+#column of redstart minutes 
+all_sites$Redstart_minutes <- redstart_minutes
+all_sites$Redstart_minutes[is.na(all_sites$Redstart_minutes)] <- 0
+
+#column for redstart fraction (proportion to total recording minutes)
+all_sites$Redstart_minutes_adj <- all_sites$Redstart_minutes/all_sites$Recording_Minutes
+
+#This is the adjusted minutes - standardized to the lowest recording time 
+all_sites$Redstart_minutes_even <- all_sites$Redstart_minutes_adj*1961
+#and rounded
+all_sites$Redstart_minutes_even_rounded <- round(all_sites$Redstart_minutes_even)
+#then the percentage 
+all_sites$percent_redstart <- all_sites$Redstart_minutes_adj*100
+
+```
+
+## Habitat/detailed columns to all_sites
+I add detailed variables/columns to the overall table.
+```{r Week and Height} 
+#The week of sampling
+all_sites$Week <- as.character(c(1,1,1,4,1,4,4,3,4,1,1,1,2,3,3,4,3,4,2,2,2))
+
+#the height, from the LIDAR data (used QGIS to find exact height)
+all_sites$Height <- c(22,65,7,35,'g',50,40,40,'g',20,45,'g','g','g',12,'g','g',20,40,'g',30)
+
+#using a a forcats function to reorder the types for later ease of graphing
+all_sites <- all_sites %>%
+  mutate(Type = fct_relevel(Type, 
+            "garden","conventional","intensive","extensive")) %>%
+  mutate(green_roof = fct_relevel(green_roof, 
+            "garden","conventional","green_roof")) 
+
+```
+
+```{r pa column}
+#Adding a column that's just presence and absence of Black Redstart
+
+all_sites <- all_sites %>%
+  mutate(present = Redstart_minutes)
+
+
+  for (i in c(1:21)) {
+    if (all_sites$Redstart_minutes[i]>0) {
+      all_sites$present[i] <- 1
+    }
+    else {
+      all_sites$present[i] <- 0
+    }
+  }
+```
+
+```{r 0s into 0.01}
+all_sites <- all_sites %>%
+  mutate(Redstart_minutes_adj_no_zero = Redstart_minutes_adj)
+
+  for (i in c(1:21)) {
+    if (all_sites$Redstart_minutes_adj[i]==0) {
+      all_sites$Redstart_minutes_adj_no_zero[i] <- 0.00001
+    }
+  }
+
+non_zeros <- seq(from=0.00001, to=0.01,by=0.00001)
+
+non_zeros_21 <- sample(non_zeros,21)
+
+all_sites$Redstart_minutes_even_no_zero <- all_sites$Redstart_minutes_even
+
+for (i in c(1:21)){
+  if (all_sites$Redstart_minutes_even[i]==0){
+all_sites$Redstart_minutes_even_no_zero[i] <- non_zeros_21[i]
+}
+}
+```
+
+```{r adding the habitat data}
+habitat_data <- read.csv("habitat_data2.csv")
+
+all_sites <- merge(all_sites,habitat_data,by="site_codes")
+
+all_sites$Height <- as.numeric(all_sites$Height)
+```
+
+NOTE - I don't know why it always says there's an error here. But if you just click "run all chunks below starting from here again, and re-run it, it is fine. 
+```{r adding LIDAR data}
+lidar_data <- read.csv('lidar_sites_data2.csv')
+lidar_data <- lidar_data[, c(2:14)]
+all_sites <- merge(all_sites,lidar_data,by="site_codes")
+
+all_sites$Height<- as.numeric(all_sites$Height)
+```
+
+```{r total hours of recording number}
+sum(all_sites$Recording_Minutes)/60
+```
+
+```{r stop showing outliers with geom_jitter}
+##code to stop showing outliers on these plots 
+all_sites <- all_sites %>%
+  group_by(roof) %>%
+  mutate(roof.show = as.numeric(  # so ggplot doesn't complain about alpha being discrete
+    between(percent_redstart, 
+            quantile(percent_redstart)[2] - 1.5*IQR(percent_redstart),
+            quantile(percent_redstart)[4] + 1.5*IQR(percent_redstart)))) 
+
+all_sites <- all_sites %>%
+  group_by(green_roof) %>%
+  mutate(green_roof.show = as.numeric(  
+    between(percent_redstart, 
+            quantile(percent_redstart)[2] - 1.5*IQR(percent_redstart),
+            quantile(percent_redstart)[4] + 1.5*IQR(percent_redstart)))) 
+
+all_sites <- all_sites %>%
+  group_by(Type) %>%
+  mutate(Type.show = as.numeric(  
+    between(percent_redstart, 
+            quantile(percent_redstart)[2] - 1.5*IQR(percent_redstart),
+            quantile(percent_redstart)[4] + 1.5*IQR(percent_redstart)))) 
+``` 
+
+## Roofs only 
+I make a version of all_sites just with roofs. 
+```{r Roofs only code}
+#make a version of all_sites but roofs only
+roofs_only <- subset(all_sites, roof == "roof")
+
+#add historic data for roofs only (I only calculated listed buildings for roof sites)
+historic_roofs_data <- read.csv("historic_data_roofs.csv")
+roofs_only <- merge(roofs_only,historic_roofs_data,by="site_codes")
+```
+
+# Validation 
+Methods - Visualizing and Stats.
+
+## Sethi - Each threshold
+I make 91 thresholds and calculate precision etc. at each
+```{r Load validation data set }
+#load the validation csv (I made it originally in excel for ease). This contains every detection I sampled and manually validated
+validation <- read.csv("all_validation_random.csv")
+
+#making a blank column for presence absence ("pa)
+validation$pa <- c(length(validation$Common.Name))
+
+#Turning all "unsure" into 0s
+for (i in c(1:length(validation$Common.Name))) {
+  if (validation[i,6]=="1"){
+    validation[i,9] <- 1
+  }
+  else {
+    validation[i,9] <- 0
+  }
+}
+```
+
+```{r Calculate at Thresholds (validation_stats)}
+#this is just a vector of all the thresholds I want to calculate
+more_thresholds <- seq(from=0.1,to=1,by=0.01)
+
+#make blank vectors of the correct length for the loop
+thresholds <- more_thresholds
+accuracy <- more_thresholds
+recall <- more_thresholds
+false_pos <- more_thresholds
+false_neg <-more_thresholds
+num_detections <- more_thresholds
+num_false_pos <- more_thresholds
+num_false_neg <- more_thresholds
+num_sites <- more_thresholds
+
+#Loop around each threshold in the vector and calculate precision, recall, true positive rate, and false positive rate, number of false positives and negatives, number of sites with this threshold  
+for (i in c(1:length(more_thresholds))){
+  accuracy[i] <- (
+    (sum(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ))/
+      (length(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ))
+  )
+  recall[i] <- (
+    (sum(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ))/
+      (sum(validation$pa)))
+  
+  false_pos[i] <- 
+    (
+      (length(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ) - 
+       (sum(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ))
+      ) /
+    (
+      (length(validation$pa))-
+        (sum(validation$pa))
+      )
+    )
+  
+  false_neg[i] <- 
+    ((
+      (sum(validation$pa)) -
+      (sum(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ))
+      ) /
+    (
+      (length(validation$pa))
+      )
+    )
+  
+  num_detections[i] <- 
+    (
+      (length(validation$pa[
+      validation$Confidence>(more_thresholds[i])]))
+      
+    )
+  
+  num_false_pos[i] <- 
+    (
+      (length(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ) - 
+       (sum(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ))
+      )
+    )
+      
+  num_false_neg[i] <- 
+    (
+      (sum(validation$pa)) -
+      (sum(validation$pa[
+      validation$Confidence>(more_thresholds[i])]
+      ))
+      )
+   num_sites[i] <- 
+    (
+      length(
+        unique(
+          validation$site_code[
+      validation$Confidence>(more_thresholds[i])])))
+}
+
+#put these in a data frame 
+# creating a matrix with 0 rows  
+# and columns  
+mat = matrix(ncol = 0, nrow = length(more_thresholds)) 
+  
+# converting the matrix to data  
+# frame 
+validation_stats=data.frame(mat) 
+
+validation_stats$thresholds <- more_thresholds 
+validation_stats$accuracy <- accuracy 
+validation_stats$recall <- recall 
+validation_stats$false_pos <- false_pos 
+validation_stats$false_neg <- false_neg 
+validation_stats$num_detections <- num_detections
+validation_stats$num_false_pos <- num_false_pos
+validation_stats$num_false_neg <- num_false_neg
+validation_stats$num_sites <- num_sites
+```
+
+## Threshold Graphs
+```{r Precision graph}
+#Precision
+validation_accuracy <- ggplot()+
+  geom_point(data=validation_stats,aes(y=accuracy,x=thresholds))+
+  geom_point(data=validation_stats,aes(y=num_detections,x=thresholds))+
+  geom_hline(yintercept=0.95,linetype="dashed",col="blue")+
+  geom_vline(xintercept=0.77,linetype="dashed",col="blue")+
+  geom_hline(yintercept=0.99,linetype="dashed",col="hotpink")+
+  theme(legend.position = "bottom")+
+  labs(x ="Threshold of Confidence For BirdNET Detections (0.1-1)", y = "Precision (Based on Results of Manual Validation)")+ 
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))+
+  scale_y_continuous(name="Precision",limits=c(0.5,1.01),breaks=seq(0,1.01,by=.10))+
+  scale_x_continuous(name="Threshold of Confidence For BirdNET Detections (0.1-1)",limits=c(0,1),breaks=seq(0,1,by=0.1))
+```
+
+```{r Recall graph}
+#RECALL
+validation_recall <- ggplot()+
+  geom_point(data=validation_stats,aes(y=recall,x=thresholds))+
+  geom_hline(yintercept=0.987,linetype="dashed",col="hotpink")+
+  geom_hline(yintercept=0.3621,linetype="dashed",col="blue")+
+  geom_vline(xintercept=0.77,linetype="dashed",col="blue")+
+  theme(legend.position = "bottom")+
+  labs(x ="Threshold of Confidence For BirdNET Detections (0.1-1)", y = "Accuracy (Based on Results of Manual Validation)")+ 
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))+
+  scale_y_continuous(name="Recall",limits=c(0,1),breaks=seq(0,1,by=0.1))+
+  scale_x_continuous(name="Threshold of Confidence For BirdNET Detections (0.1-1)",limits=c(0,1),breaks=seq(0,1,by=0.1))
+```
+
+```{r Shown together}
+grid.arrange(validation_accuracy,validation_recall,ncol=2)
+```
+
+##All retained detections 
+Here I actually pool together all the detections I kept through the validation process.
+```{r All retained detections}
+all_detections <- rbind(guildhall,
+                        weils,
+                        b_n_b,
+                        cannon_bridge,
+                        cleary,
+                        charterhouse,
+                        KCL,
+                        nomura_11,
+                        nomura_6,
+                        pepys,
+                        walbrooke,
+                        wood_st,
+                        liverpool,
+                        botolphs)
+
+#number of detections retained -3922
+nrow(all_detections)
+#the average confidence of my retained detection - 0.673569
+mean(all_detections$Confidence)
+#the range of my retained detections = 0.1004-1.000
+range(all_detections$Confidence)
+```
+
+##Validation - Site by site
+```{r site by site validation}
+#this is a file I made with the site by site validation results 
+validation_site_stats <- read.csv("validation_site_stats.csv")
+
+#getting rid of NA
+validation_site_stats <- na.omit(validation_site_stats)
+
+#turning columns numeric
+validation_site_stats$Sample_Avg_Confidence <- as.numeric(validation_site_stats$Sample_Avg_Confidence)
+validation_site_stats$Sample_accuracy <- as.numeric(validation_site_stats$Sample_accuracy)
+
+#arranging by avg confidence 
+validation_site_stats <- validation_site_stats%>%
+  arrange(Sample_Avg_Confidence)
+
+validation_site_stats$Accuracy_beta <- validation_site_stats$Sample_accuracy
+
+#turning the 0% and 100% accuracy values into 0.001 and 0.999 so I can beta model accuracy against average confidence 
+for (i in c(1:20)) {
+  if (validation_site_stats$Accuracy_beta[i]==0){
+    validation_site_stats$Accuracy_beta[i] <- 0.001
+  }
+  if (validation_site_stats$Accuracy_beta[i]==1){
+    validation_site_stats$Accuracy_beta[i] <- 0.999
+  }
+}
+```
+
+```{r descriptive stats by site }
+mean(validation_site_stats$Sample_Avg_Confidence)
+std.error(validation_site_stats$Sample_Avg_Confidence)
+sd(validation_site_stats$Sample_Avg_Confidence)
+range(validation_site_stats$Sample_Avg_Confidence)
+
+
+mean(validation_site_stats$Accuracy_beta)
+std.error(validation_site_stats$Accuracy_beta)
+sd(validation_site_stats$Accuracy_beta)
+range(validation_site_stats$Accuracy_beta)
+```
+
+### Beta model - precision v. confidence site by site
+Note that I did not end up putting this in my project. I have the code here because it is interesting
+```{r beta model - precision vs. confidence by site}
+validation_beta <- betareg(Accuracy_beta ~ Sample_Avg_Confidence, data=validation_site_stats)
+summary(validation_beta)
+```
+
+```{r beta model results}
+exp(3.2263/10)
+
+par(mfrow=c(2,2))
+plot(validation_beta)
+```
+
+```{r beta model graph - predicting results }
+pred_accuracy <-(predict(validation_beta, data.frame(Sample_Avg_Confidence=seq(0,1,by=0.01)), type="response" ))
+
+pred_val <- data.frame(Sample_Avg_Confidence=seq(0,1,by=0.01), pred_accuracy)
+```
+
+```{r size groups for plotting}
+validation_site_stats$Size_group <- validation_site_stats$Num_detections
+
+
+  for (i in c(1:20)) {
+  if (validation_site_stats$Num_detections[i]<10){
+    validation_site_stats$Size_group[i] <- 1
+  }
+  if ((validation_site_stats$Num_detections[i]>10)&
+      (validation_site_stats$Num_detections[i]<50)){
+    validation_site_stats$Size_group[i] <- 2
+  }
+  if ((validation_site_stats$Num_detections[i]>50)&
+      (validation_site_stats$Num_detections[i])){
+    validation_site_stats$Size_group[i] <- 3
+  }
+  }
+
+validation_site_stats$Size_group <- as.factor(validation_site_stats$Size_group)
+
+validation_site_stats <- validation_site_stats[-21, ]
+```
+
+```{r beta plot}
+ggplot()+
+  geom_line(data=pred_val, aes(y=pred_accuracy,x=Sample_Avg_Confidence))+
+  geom_point(data=validation_site_stats, aes(x=Sample_Avg_Confidence,y=Sample_accuracy,size=Size_group),shape=1)+
+  theme(legend.position = "bottom")+
+  labs(title="Average Confidence of BirdNET Detections vs. Accuracy At Each Site",
+        x ="Average Confidence of BirdNET Detections (0.1-1)", y = "Accuracy Calculated from Manual Validation")+ 
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        plot.title = element_text(face="bold", family="Arial", colour="black", size=14),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))+
+  scale_y_continuous(name="Accuracy of Samples Validated ",limits=c(0,1),breaks=seq(0,1,by=.5))+
+  scale_x_continuous(name="Average Confidence of BirdNET Detections of Sample (0.1 - 1.0)",limits=c(0,1),breaks=seq(0,1,by=0.1))+
+  scale_size_manual(name="Number of BirdNET Detections", labels = c("<10", "10-50",">50"),values=c(1,2,3.5))
+```
+
+### Graphs - By site, precision and confidence
+This is in my project
+```{r precision by site plot }
+precision_by_site_plot <- ggplot(data=validation_site_stats, aes(x=reorder(Site,Site_order), y=Sample_accuracy))+
+ geom_bar(aes(fill= Num_detections),col="black", stat="Identity")+
+    scale_y_continuous(name="Precision",limits=c(0,1),breaks=seq(0,1,by=0.1))+
+  scale_fill_gradientn(name="# of Detections", colours=c("red","yellow","green","blue"), trans = "log",
+                        breaks = my_breaks, labels = my_breaks)+
+  scale_x_discrete(labels=c("Charterhouse","Bird and Bird","Walbrooke","Guildhall","KCL","100 Liverpool","Weils","Wood St","Nomura 6","Nomura 11","Cannon Bridge","Dunstan","Pepys","Botolphs","Roman Wall","Cleary Gardens","Barber Surgeons","Christchurch","Temple","Fenchurch"))+
+  labs(
+        x ="Site Name", y = "Precision")+
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=13),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=13),
+        axis.text.x = element_text(angle=45, hjust=1, size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        legend.text=element_text(size=9))
+
+precision_by_site_plot
+```
+
+```{r confidence and precision, shown together }
+
+ggarrange(
+  confidence_by_site_plot, precision_by_site_plot,
+  ncol = 2, nrow = 1,
+  labels = c("A", "B"),
+  font.label = list(size = 15, color = "black"),
+  common.legend = TRUE,  # Show common legend if needed
+  legend = "bottom"      # Place legend if using common legend
+) 
+
+
+```
+
+## Bota et al - Logistic Regression 
+```{r logit score}
+
+validation$logit_score <- c(1:nrow(validation)) 
+
+for (i in c(1:nrow(validation))){
+  validation$logit_score[i] <- log(1/(1-validation$Confidence[i]))
+}
+```
+
+```{r summary stats}
+mean(validation$logit_score)
+sd(validation$logit_score)
+range(validation$logit_score)
+
+
+mean(validation$Confidence)
+sd(validation$Confidence)
+range(validation$Confidence)
+
+validation %>%
+  filter(pa==1)%>%
+  nrow()
+
+validation %>%
+  filter(pa==0)%>%
+  nrow()
+
+```
+
+```{r basic plot}
+plot(validation$pa~validation$logit_score)
+```
+
+```{r binomial model}
+validation_binary <- glm(pa ~ logit_score, data = validation, family = binomial(link = logit))
+summary(validation_binary)
+```
+
+```{r diagnostic plots}
+plot(validation_binary)
+```
+
+```{r model results}
+#the logit score where 95% will be true - 
+(log(19)/1.0637)
+# = 2.76811
+#back transformed to confidence
+(exp(2.76811)-1)/(exp(2.76811))
+```
+
+```{r predict for graph}
+logit_score_pred <- c(seq(from=0.1,to=8.1,by=0.1))
+
+#predict for line for graph
+
+pred_pa <- predict(validation_binary, 
+                   data.frame(logit_score = logit_score_pred), 
+                   type = "response", se.fit = TRUE)
+
+pred12 <- data.frame(
+  logit_score = logit_score_pred,
+  pred_pa = pred_pa$fit,  # Predicted probabilities
+  lower_ci = pred_pa$fit - 1.96 * pred_pa$se.fit,  # Lower bound of 95% CI
+  upper_ci = pred_pa$fit + 1.96 * pred_pa$se.fit   # Upper bound of 95% CI
+)
+
+
+
+```
+
+```{r logit score graph}
+ggplot()+
+  geom_ribbon(data = pred12, aes(x = logit_score, ymin = lower_ci, ymax = upper_ci), 
+              fill = "lightblue", alpha = 0.5) +
+  geom_line(data=pred12, aes(y=pred_pa,x=logit_score))+
+  geom_point(data=validation, aes(y=pa, x=logit_score))+
+  geom_vline(xintercept = 2.76,col="blue",linetype="dashed")+
+  geom_hline(yintercept = 0.95,col="blue",linetype="dashed")+
+  theme(legend.position = "bottom")+
+  labs(x ="Logit score", y = "Probability of a True Detection")+ 
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))
+```
+
+```{r confidence score graph}
+
+pred12$Confidence_bt <- (exp(pred12$logit_score)-1)/(exp(pred12$logit_score))
+
+
+ggplot()+
+  geom_ribbon(data = pred12, aes(x = Confidence_bt, ymin = lower_ci, ymax = upper_ci), 
+              fill = "lightblue", alpha = 0.5) +
+  geom_line(data=pred12, aes(y=pred_pa,x=Confidence_bt))+
+  geom_point(data=validation, aes(y=pa, x=Confidence),cex=0.5)+
+  geom_vline(xintercept = 0.93,col="blue",linetype="dashed")+
+  geom_hline(yintercept = 0.95,col="blue",linetype="dashed")+
+  theme(legend.position = "bottom")+
+  labs(x ="Confidence Score of Detection", y = "Probability of a True Detection")+ 
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))
+```
+
+```{r}
+
+#Here I add site codes and site names to the all detections df
+all_detections$site_codes <- c(nrow(all_detections))
+all_detections$site_names <- c(nrow(all_detections))
+
+total <- c(1:nrow(all_detections))
+
+
+for (i in total) {
+  if (grepl("BARBER", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "barber_surgeons"
+    all_detections$site_names[i] <- "Barber Surgeons"
+  }
+  if (grepl("GUILDHALL", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "guildhall"
+    all_detections$site_names[i] <- "Guildhall"
+  }
+  if (grepl("WARBROOK", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "walbrooke"
+    all_detections$site_names[i] <- "Walbrooke"
+  }
+  if (grepl("WOOD", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "wood_st"
+    all_detections$site_names[i] <- "Wood St"
+  }
+  if (grepl("CANNON", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "cannon_bridge"
+    all_detections$site_names[i] <- "Cannon Bridge"
+  }
+  if (grepl("SEEING", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "pepys"
+    all_detections$site_names[i] <- "Pepys"
+  }
+  if (grepl("CHARTER", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "charterhouse"
+    all_detections$site_names[i] <- "Charterhouse"
+  }
+  if (grepl("BOTOLPH", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "botolphs"
+    all_detections$site_names[i] <- "St Botolphs"
+  }
+  if (grepl("TEMPLE", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "temple"
+    all_detections$site_names[i] <- "Temple"
+  }
+  if (grepl("LIVERPOOL", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "liverpool"
+    all_detections$site_names[i] <- "100 Liverpool"
+  }
+  if (grepl("CLEARY", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "cleary"
+    all_detections$site_names[i] <- "Cleary Gardens"
+  }
+  if (grepl("KCL", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "KCL"
+    all_detections$site_names[i] <- "KCL"
+  }
+  if (grepl("FETTER", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "weils"
+    all_detections$site_names[i] <- "Weils"
+  }
+  if (grepl("NOMURA6", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "nomura_6"
+    all_detections$site_names[i] <- "Nomura 6"
+  }
+  if (grepl("NOMURA_", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "nomura_11"
+    all_detections$site_names[i] <- "Nomura 11"
+  }
+  if (grepl("BIRDBIRD", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "b_n_b"
+    all_detections$site_names[i] <- "Bird and Bird"
+  }
+  if (grepl("FENCHURCH", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "fenchurch"
+    all_detections$site_names[i] <- "120 Fenchurch"
+  }
+  if (grepl("ROMAN", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "roman_wall"
+    all_detections$site_names[i] <- "Roman Wall"
+  }
+  if (grepl("GREYFRIARS", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "christchurch"
+    all_detections$site_names[i] <- "Christchurch"
+  }
+  if (grepl("DUSTEN", all_detections[i,11], fixed=TRUE)==TRUE){
+    all_detections$site_codes[i] <- "dunstan"
+    all_detections$site_names[i] <- "Dunstan"
+  }
+}
+
+```
+
+## Bota and Sethi Stats
+```{r Sethi and bota total detections}
+
+sethi_all_data <- all_data_no_validation %>%
+  filter(Confidence>=0.77)
+
+nrow(sethi_all_data)
+length(unique(sethi_all_data$site_codes))
+  
+
+bota_all_data <- all_data_no_validation %>%
+  filter(Confidence>=0.93)
+
+nrow(bota_all_data)
+length(unique(bota_all_data$site_codes))
+
+#from sample set 
+sethi_validated <- validation %>%
+  filter(Confidence > 0.77)
+
+nrow(sethi_validated)
+length(unique(sethi_validated$site_code))
+
+bota_validated <- validation %>%
+  filter(Confidence > 0.93)
+
+nrow(bota_validated)
+length(unique(bota_validated$site_code))
+
+```
+
+
+#General Models and Stats
+## Summary of Data
+```{r Descriptive stats}
+mean(all_sites$Redstart_minutes_even_rounded)
+std.error(all_sites$Redstart_minutes_even_rounded)
+range(all_sites$Redstart_minutes_even_rounded)
+
+mean(roofs_only$Redstart_minutes_even_rounded)
+std.error(roofs_only$Redstart_minutes_even_rounded)
+range(roofs_only$Redstart_minutes_even_rounded)
+```
+
+```{r Recording minute descriptive stats}
+mean(all_sites$Recording_Minutes)
+std.error(all_sites$Recording_Minutes)
+range(all_sites$Recording_Minutes)
+hist(all_sites$Recording_Minutes,n=100,xlim=c(1000,4000))
+```
+
+
+##Histograms of All sites and roofs
+```{r histograms}
+hist_all <- ggplot(all_sites,aes(x=Redstart_minutes_even))+
+  geom_histogram(color="black", fill="ivory2")+
+  geom_vline(aes(xintercept=mean(Redstart_minutes_even)),
+            color="ivory4", linetype="dashed", size=0.5)+
+  labs(title="All Sites",
+        x ="Number of BR Minutes", y = "Frequency")+ 
+  theme(plot.title = element_text(face="bold", family="Arial", colour="black", size=11),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))
+
+hist_roofs <- ggplot(roofs_only,aes(x=Redstart_minutes_even))+
+  geom_histogram(color="black", fill="ivory2")+
+  geom_vline(aes(xintercept=mean(Redstart_minutes_even)),
+            color="ivory4", linetype="dashed", size=0.5)+
+  labs(title="All Roofs",
+        x ="Number of BR Minutes", y = "Frequency")+ 
+  theme(plot.title = element_text(face="bold", family="Arial", colour="black", size=11),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))
+
+
+ggarrange(
+  hist_all, hist_roofs,
+  ncol = 2, nrow = 1,
+  labels = c("A", "B","C"),
+  font.label = list(size = 10, color = "black"),
+  common.legend = FALSE,  # Show common legend if needed
+  legend = "bottom"      # Place legend if using common legend
+) +
+  # Add a common title
+  ggtitle("Histograms of BR Activity") +
+  theme(plot.title = element_text(face = "bold", family = "Arial", colour = "black", size = 14))
+```
+
+##Testing which distribution is best
+
+```{r plot distribution}
+plotdist(all_sites$Redstart_minutes_even_rounded, histo = TRUE, demp = TRUE)
+```
+
+```{r all sites fitdist}
+fit.nb <- fitdist(all_sites$Redstart_minutes_even_rounded, distr = "nbinom", method = "mle")
+summary(fit.nb)
+
+fit.poisson <- fitdist(all_sites$Redstart_minutes_even_rounded, distr = "pois", method = "mle")
+summary(fit.poisson)
+```
+
+```{r roofs only fitdist}
+fit.nb_roofs <- fitdist(roofs_only$Redstart_minutes_even_rounded, distr = "nbinom", method = "mle")
+summary(fit.nb_roofs)
+
+fit.poisson_roofs <- fitdist(roofs_only$Redstart_minutes_even_rounded, distr = "pois", method = "mle")
+summary(fit.poisson_roofs)
+```
+
+```{r plotting fits}
+plot(fit.nb)
+plot(fit.poisson)
+```
+
+
+# Garden vs Roof
+
+This code shows that you can't do a t-test or a Kruskal Wallis because the variances are too different 
+```{r variance in gardens and roofs}
+gardens_only <- all_sites%>%
+  filter(Type=="garden")
+
+var(all_sites$percent_redstart)
+var(gardens_only$percent_redstart)
+var(roofs_only$percent_redstart)
+```
+
+## Final Graph
+```{r code to designate outliers for graphing}
+#this code designates the outliers so I can specifically control what colour they are on the boxplot
+all_sites <- all_sites %>%
+  group_by(roof) %>%
+  mutate(outlier = Redstart_minutes_even_rounded > (quantile(Redstart_minutes_even_rounded, 0.75) + 1.5 * IQR(Redstart_minutes_even_rounded)) |
+                     Redstart_minutes_even_rounded < (quantile(Redstart_minutes_even_rounded, 0.25) - 1.5 * IQR(Redstart_minutes_even_rounded)))
+
+```
+
+```{r final graph}
+
+ggplot(all_sites,aes(x=roof,y=Redstart_minutes_even_rounded, fill=roof))+
+  geom_boxplot(outlier.colour = NA)+
+  geom_point(data = filter(all_sites, outlier), aes(fill = roof), col='black',size = 2, shape = 21)+
+  theme(legend.position="none")+
+  labs(
+        x ="Type of Site", y = "Black Redstart Activity (min)")+ 
+  theme(
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=12),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=12),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.y = element_line(color = "ivory4",
+                                        size = 0.1),
+        text=element_text(face='bold', family="Arial",colour="black", size=11))+
+  scale_fill_manual(values = c("seagreen3", "brown"))+
+  scale_x_discrete(labels = c("Gardens", "Roofs"))+
+  geom_jitter(aes(alpha=roof.show,fill=roof), show.legend=FALSE,size=2,shape=21,col='black') +
+  scale_alpha_continuous(range = c(0, 1))+
+  scale_color_manual(values = c("seagreen4", "brown2"))
+
+
+
+```
+
+## Model - NB-GLM
+### Descriptive Stats
+```{r descriptive stats}
+print("Garden Stats")
+mean(gardens_only$Redstart_minutes_even)
+std.error(gardens_only$Redstart_minutes_even)
+sd(gardens_only$Redstart_minutes_even)
+
+print("Roof Stats")
+mean(roofs_only$Redstart_minutes_even)
+std.error(roofs_only$Redstart_minutes_even)
+sd(roofs_only$Redstart_minutes_even)
+```
+### Model
+```{r model}
+roof_nb <- glm.nb(formula = Redstart_minutes_even_rounded~roof,data=all_sites,link=log)
+summary(roof_nb)
+```
+
+Coefficient back transformations 
+```{r coefficients}
+#gardens
+exp(0)
+#roofs
+exp(4.0519)
+#95 CI
+exp(4.0519-2*0.8997 )
+exp(4.0542+2*0.8997 )
+```
+
+```{r model stats}
+#pseudo R2
+1-(22.119/34.668)
+#dispersion parameter
+22.119/19
+#anova
+anova(roof_nb,test="Chisq")
+#zero inflation
+check_zeroinflation(roof_nb)
+```
+
+```{r cooks distance outliers }
+roof_nb_cooksD <- cooks.distance(roof_nb)
+influential <- roof_nb_cooksD[(roof_nb_cooksD > (3 * mean(roof_nb_cooksD, na.rm = TRUE)))]
+influential
+#7 and #10
+```
+
+```{r diagnostic plots}
+par(mfrow=c(2,2))
+plot(roof_nb)
+```
+
+
+# Conventional vs Green Roofs
+I did not end up using this in my report
+## Graph
+```{r}
+#making my own colour 
+light_green <- rgb(200/255, 238/255, 130/255)
+
+ggplot(roofs_only,aes(x=green_roof,y=Redstart_minutes_even, fill=green_roof))+
+  geom_boxplot()+
+  labs(title="All Roof Sites",
+        x ="Type of Roof", y = "BR Activity (min)")+ 
+  theme(legend.position="none",
+        plot.title = element_text(face="bold", family="Arial", colour="black", size=11),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.y = element_line(color = "ivory4",
+                                        size = 0.1))+
+  scale_fill_manual(values=c("ivory3",light_green))+
+  guides(fill = "none")+
+  scale_x_discrete(labels=c("Conventional","Green"))+
+  geom_jitter(aes(alpha=green_roof.show), show.legend=FALSE) +
+  scale_alpha_continuous(range = c(0, 1))
+
+```
+
+## Model
+```{r descriptive stats}
+#All Data
+conventional_only <- all_sites%>%
+  filter(Type=="conventional")
+
+green_roof_only <- all_sites%>%
+  filter(green_roof=="green_roof")
+  
+nrow(conventional_only)
+mean(conventional_only$Redstart_minutes_even_rounded)
+std.error(conventional_only$Redstart_minutes_even_rounded)
+sd(conventional_only$Redstart_minutes_even_rounded)
+range(conventional_only$Redstart_minutes_even_rounded)
+
+nrow(green_roof_only)
+mean(green_roof_only$Redstart_minutes_even_rounded)
+std.error(green_roof_only$Redstart_minutes_even_rounded)
+sd(green_roof_only$Redstart_minutes_even_rounded)
+range(green_roof_only$Redstart_minutes_even_rounded)
+```
+
+```{r NB GLM}
+green_roof_nb <- glm.nb(formula = Redstart_minutes_even_rounded~green_roof,data=roofs_only,link=log)
+summary(green_roof_nb)
+
+```
+
+```{r coefficients}
+#conventional AND green roofs
+exp(3.5742)
+#95 CI
+exp(3.5742-2*1.0626 )
+exp(3.5742+2*1.0626 )
+```
+
+```{r model stats}
+#pseudo R2
+1-(15.921/16.231)
+#dispersion
+15.921/11
+#anova
+anova(green_roof_nb,test="Chisq")
+#check zero inflation
+check_zeroinflation(green_roof_nb)
+```
+
+```{r diagnostic plots }
+plot(green_roof_nb)
+```
+
+
+#Listed Buildings Data
+##Looking at all data
+```{r turning data to numeric}
+#making all these numeric
+roofs_only$Grade_I_50 <- as.numeric(roofs_only$Grade_I_50)
+roofs_only$Grade_I_100 <- as.numeric(roofs_only$Grade_I_100)
+roofs_only$Grade_I_200 <- as.numeric(roofs_only$Grade_I_200)
+
+roofs_only$Grade_II_s_50 <- as.numeric(roofs_only$Grade_II_s_50)
+roofs_only$Grade_II_s_100 <- as.numeric(roofs_only$Grade_II_s_100)
+roofs_only$Grade_II_s_200 <- as.numeric(roofs_only$Grade_II_s_200)
+
+roofs_only$Listed_50 <- as.numeric(roofs_only$Listed_50)
+roofs_only$Listed_100 <- as.numeric(roofs_only$Listed_100)
+roofs_only$Listed_200 <- as.numeric(roofs_only$Listed_200)
+```
+
+```{r grade I initial plots}
+plot(Redstart_minutes_even ~ Grade_I_50, data=roofs_only)
+plot(Redstart_minutes_even ~ Grade_I_100, data=roofs_only)
+plot(Redstart_minutes_even ~ Grade_I_200, data=roofs_only)
+```
+
+```{r grade II initial plots}
+plot(Redstart_minutes_even ~ Grade_II_s_50, data=roofs_only)
+plot(Redstart_minutes_even ~ Grade_II_s_100, data=roofs_only)
+plot(Redstart_minutes_even ~ Grade_II_s_200, data=roofs_only)
+```
+
+```{r both listed, initial plots}
+plot(Redstart_minutes_even ~ Listed_50, data=roofs_only)
+plot(Redstart_minutes_even ~ Listed_100, data=roofs_only)
+plot(Redstart_minutes_even ~ Listed_200, data=roofs_only)
+```
+
+## Which buffer - 50, 100, 200 
+Running three NB-GLMs to see which buffer explains the data best
+```{r NB-GLM, factors}
+listed_50_roofs <- glm.nb(formula = Redstart_minutes_even_rounded~as.factor(Listed_50),data=roofs_only,link=log)
+summary(listed_50_roofs)
+
+listed_100_roofs <- glm.nb(formula = Redstart_minutes_even_rounded~as.factor(Listed_100),data=roofs_only,link=log)
+summary(listed_100_roofs)
+
+listed_200_roofs <- glm.nb(formula = Redstart_minutes_even_rounded~as.factor(Listed_200),data=roofs_only,link=log)
+summary(listed_200_roofs)
+```
+
+```{r comparing R2}
+#pseudo R2 
+#50 m - 51% THE BEST 
+1-(15.253/31.299)
+#100 m 
+1-(15.472/21.670)
+#200m
+1-(15.190/24.133)
+```
+
+## 50 m Model and Graph - 3 level factor
+### Descriptive Stats
+```{r descriptive stats}
+#All Data
+listed_0_roofs <- roofs_only%>%
+  filter(Listed_50==0)
+
+listed_1_roofs <- roofs_only%>%
+  filter(Listed_50==1)
+
+listed_2_roofs <- roofs_only%>%
+  filter(Listed_50==2)
+  
+nrow(listed_0_roofs)
+mean(listed_0_roofs$Redstart_minutes_even_rounded)
+std.error(listed_0_roofs$Redstart_minutes_even_rounded)
+sd(listed_0_roofs$Redstart_minutes_even_rounded)
+range(listed_0_roofs$Redstart_minutes_even_rounded)
+
+nrow(listed_1_roofs)
+mean(listed_1_roofs$Redstart_minutes_even_rounded)
+std.error(listed_1_roofs$Redstart_minutes_even_rounded)
+sd(listed_1_roofs$Redstart_minutes_even_rounded)
+range(listed_1_roofs$Redstart_minutes_even_rounded)
+
+nrow(listed_2_roofs)
+mean(listed_2_roofs$Redstart_minutes_even_rounded)
+std.error(listed_2_roofs$Redstart_minutes_even_rounded)
+sd(listed_2_roofs$Redstart_minutes_even_rounded)
+range(listed_2_roofs$Redstart_minutes_even_rounded)
+```
+### Model
+```{r model}
+listed_50_roofs_factor <- glm.nb(formula = Redstart_minutes_even_rounded~as.factor(Listed_50),data=roofs_only,link=log)
+summary(listed_50_roofs_factor)
+```
+
+```{r coefficients}
+exp(2.28)
+exp(2.28)*exp(2.521)
+exp(2.28)*exp(3.681)
+
+exp(2.521)
+exp(2.521-0.860)
+exp(2.521+0.860)
+
+exp(3.681)
+exp(3.681-1.352)
+exp(3.681+1.352)
+```
+
+```{r model stats}
+#pseudo r2
+1-(15.253/31.299)
+#dispersion
+15.253/10
+#anova
+anova(listed_50_roofs_factor,test="Chisq")
+#check zero inflation
+check_zeroinflation(listed_50_roofs_factor)
+```
+
+```{r diagnostic plots}
+par(mfrow=c(2,2))
+plot(listed_50_roofs_factor)
+```
+
+```{r boxplot}
+ggplot()+
+  geom_boxplot(data=roofs_only, aes(y=Redstart_minutes_even, x=as.factor(Listed_50)))+
+  theme(legend.position = "bottom")+
+  labs(title="BR Activity v Number of Listed Buildings in 50m Radius",
+        x ="Number of Listed Buildings in 50m Radius", y = "BR Activity (min)")+ 
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        plot.title = element_text(face="bold", family="Arial", colour="black", size=14),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))
+```
+
+# LIDAR Data
+## SDH
+```{r basic plots, all sites}
+plot(Redstart_minutes_even~SD_50,data=all_sites)
+plot(Redstart_minutes_even~SD_100,data=all_sites)
+plot(Redstart_minutes_even~SD_150,data=all_sites)
+plot(Redstart_minutes_even~SD_200,data=all_sites)
+```
+
+```{r basic plots, roofs only}
+plot(Redstart_minutes_even~SD_50,data=roofs_only)
+plot(Redstart_minutes_even~SD_100,data=roofs_only)
+plot(Redstart_minutes_even~SD_150,data=roofs_only)
+plot(Redstart_minutes_even~SD_200,data=roofs_only)
+```
+
+### Which buffer - all roofs
+```{r NB GLM for each buffer}
+SD_roofs_50 <- glm.nb(formula = Redstart_minutes_even_rounded~SD_50,data=roofs_only,link=log)
+summary(SD_roofs_50)
+SD_roofs_100 <- glm.nb(formula = Redstart_minutes_even_rounded~SD_100,data=roofs_only,link=log)
+summary(SD_roofs_100)
+SD_roofs_150 <- glm.nb(formula = Redstart_minutes_even_rounded~SD_150,data=roofs_only,link=log)
+summary(SD_roofs_150)
+SD_roofs_200 <- glm.nb(formula = Redstart_minutes_even_rounded~SD_200,data=roofs_only,link=log)
+summary(SD_roofs_200)
+```
+```{r comparing R2 }
+#pseudo R2
+#50
+1-(15.136/22.554)
+#100 m - highest R2 - 43.7
+1-(14.421/25.623)
+#150
+1-(15.526/17.259)
+#200
+1-(15.951/15.955)
+```
+
+## Mean Height
+### Which buffer - all roofs
+```{r NB GLM for each buffer}
+mean_roofs_50 <- glm.nb(formula = Redstart_minutes_even_rounded~Mean_50,data=roofs_only,link=log)
+summary(mean_roofs_50)
+
+mean_roofs_100 <- glm.nb(formula = Redstart_minutes_even_rounded~Mean_100,data=roofs_only,link=log)
+summary(mean_roofs_100)
+
+mean_roofs_150 <- glm.nb(formula = Redstart_minutes_even_rounded~Mean_150,data=roofs_only,link=log)
+summary(mean_roofs_150)
+
+mean_roofs_200 <- glm.nb(formula = Redstart_minutes_even_rounded~Mean_200,data=roofs_only,link=log)
+summary(mean_roofs_200)
+```
+```{r comparing R2}
+#pseudo R2
+#50 - winner with 42.1%
+1-(14.572/25.202 )
+#100 - highest R2
+1-(15.296/23.592)
+#150
+1-(15.941/16.020)
+#200
+1-(15.825/17.020)
+```
+
+
+#Invertebrates (Abundance)
+
+```{r reading data}
+insects <- read.csv('insect_data2.csv')
+insects[is.na(insects)] <- 0
+#columns and rows with nothing in them
+#insects <- insects[-(22:25), ]
+#insects <- insects[,-(30:31) ]
+```
+
+```{r merging in}
+all_sites_insects <- merge(all_sites,insects, by="site_codes")
+
+roofs_only_insects<- merge(roofs_only,insects, by="site_codes")
+```
+
+```{r adj by sampling time}
+#adjusting total inverts for sampling time 
+
+#blank vector columns
+all_sites_insects$total_inv_per_min <- c(1:21)
+all_sites_insects$total_inv_adj <- c(1:21)
+
+#loops to adjust them
+for (i in c(1:21)){
+  all_sites_insects$total_inv_per_min[i] <-all_sites_insects$total_inv[i]/all_sites_insects$Recording_Minutes[i]
+}
+
+for (i in c(1:21)){
+  all_sites_insects$total_inv_adj[i] <-round(all_sites_insects$total_inv_per_min[i]*1961)
+}
+```
+
+```{r adj by sampling time - roofs}
+#adjusting total inverts for sampling time 
+roofs_only_insects$total_inv_per_min <- c(1:13)
+roofs_only_insects$total_inv_adj <- c(1:13)
+
+for (i in c(1:13)){
+  roofs_only_insects$total_inv_per_min[i] <-roofs_only_insects$total_inv[i]/roofs_only_insects$Recording_Minutes[i]
+}
+
+for (i in c(1:13)){
+  roofs_only_insects$total_inv_adj[i] <-round(roofs_only_insects$total_inv_per_min[i]*1961)
+}
+```
+
+##Histograms 
+```{r histograms}
+hist(all_sites_insects$total_inv_adj,n=20)
+hist(all_sites_insects$no_orders)
+```
+
+```{r boxplot }
+boxplot(all_sites_insects$total_inv_adj)
+```
+
+## Removing Outlier 
+60 London Wall is an outlier with tons of numbers - note they had a beehive. (but we didn't catch any bees)
+```{r removing outlier (60 London wall)}
+all_sites_insects_no_o <- all_sites_insects %>%
+  filter(total_inv_adj<140)
+
+roofs_only_insects_no_london <- roofs_only_insects %>%
+  filter(total_inv_adj<140)
+```
+
+
+## Week
+This is in an appendix
+```{r boxplot by week}
+ggplot(all_sites_insects,aes(x=week,y=total_inv_adj,fill=week)) +
+  geom_boxplot(alpha=0.2) +
+  geom_jitter(size=1, position = position_jitter(0.1))+
+  labs(
+    title="Total Number of Invertebrates by Week"
+  )+
+  xlab("Week of Sampling")+
+  ylab("Total Number of Invertebrates")+
+  theme(legend.position="none",
+        plot.title = element_text(face="bold", family="Arial", colour="black", size=12),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.y = element_line(color = "ivory4",
+                                        size = 0.1))+
+  guides(fill = "none")+
+  scale_x_discrete(labels=c("Week 1","Week 2", "Week 3", "Week 4"))+
+    scale_fill_viridis(discrete=TRUE, option="viridis")
+```
+
+### Week Model
+```{r poisson (overdispersed)}
+insect_week_poisson <- glm(formula = total_inv_adj~week,family="poisson",data=all_sites_insects)
+summary(insect_week_poisson)
+```
+
+```{r quasi poisson}
+insect_week_poisson_q <- glm(formula = total_inv_adj~week,family="quasipoisson",data=all_sites_insects)
+summary(insect_week_poisson_q)
+```
+
+```{r qpoisson model stats}
+#dispersion parameter
+245.06/17
+#pseudo R2
+1-(245.06/451.97)
+```
+
+```{r anova}
+anova(insect_week_poisson, test="Chisq")
+anova(insect_week_poisson_q, test="Chisq")
+```
+
+```{r}
+emm1 <- emmeans(insect_week_poisson_q, ~ week)
+pairwise_results_adjusted1 <- pairs(emm1, adjust = "tukey")
+print(pairwise_results_adjusted1)
+```
+
+
+## Conv v Green Roof
+```{r final boxplot}
+ggplot(roofs_only_insects,aes(x=green_roof,y=total_inv_adj, fill=green_roof)) +
+  geom_boxplot() +
+  xlab("Type of Roof")+
+  ylab("Total Number of Invertebrates")+
+  theme(legend.position="none",
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.y = element_line(color = "ivory4",
+                                        size = 0.1))+
+  scale_fill_manual(values=c("ivory3",light_green))+
+  guides(fill = "none")+
+  scale_x_discrete(labels=c("Conventional","Green"))
+
+  #geom_jitter(aes(alpha=green_roof_insects_show), show.legend=FALSE) +
+  #scale_alpha_continuous(range = c(0, 1))
+```
+
+### Models
+```{r poisson}
+insect_roof_poisson <- glm(formula = total_inv_adj~green_roof,family="poisson",data=roofs_only_insects)
+summary(insect_roof_poisson)
+```
+
+```{r descriptive stats}
+conv_insects_only <- roofs_only_insects %>%
+  filter(green_roof=="conventional")
+
+mean(conv_insects_only$total_inv_adj)
+sd(conv_insects_only$total_inv_adj)
+range(conv_insects_only$total_inv_adj)
+
+green_insects_only <- roofs_only_insects %>%
+  filter(green_roof=="green_roof")
+
+mean(green_insects_only$total_inv_adj)
+sd(green_insects_only$total_inv_adj)
+range(green_insects_only$total_inv_adj)
+```
+
+```{r poisson with random effects}
+library(Matrix)
+library(lme4)
+
+insect_roof_poisson_random <- glmer(total_inv_adj ~ green_roof + (1 | week), data = roofs_only_insects, family = poisson(link = "log"))
+summary(insect_roof_poisson_random)
+
+```
+
+```{r coefficients, model stats}
+exp(0.3560)
+
+r.squaredGLMM(insect_roof_poisson_random)
+
+#total explains 88.70%
+#week explains 11.22%
+#site type explains...77.48%
+0.8870-0.1122
+```
+
+
+# Full Models
+## Full Model 1 
+- the variables that explain the best for the buffers (see above)
+  - mean 50
+  - sd 100
+  - listed 50 - as a factor with levels 0, 1, 2
+  
+Correlation of Height and SD
+Note - height and SD at 100 m radius are highly correlated - does not make sense to have them both in a model or even do two models with them. But the VIF itself gets rid of this  
+```{r correlation between height and SDH}
+cor(roofs_only$Height, roofs_only$SD_100, method="pearson")
+```
+
+```{r VIF}
+roofs_only$Listed_50 <- as.factor(roofs_only$Listed_50)
+
+roofs_only1 <- as.data.frame(roofs_only)
+
+
+
+vif(roofs_only1[c("Height","Green_area_m2","Mean_50","SD_100")])
+vif(roofs_only1[c("Green_area_m2","Mean_50","SD_100")])
+vif(roofs_only1[c("Green_area_m2","SD_100")])
+
+#both under 3 now 
+```
+
+```{r full model}
+everything_vif_ap <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50+SD_100,data=roofs_only,link=log)
+summary(everything_vif_ap)
+```
+Remove SD_100
+```{r final model}
+everything_vif_ap1 <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50,data=roofs_only,link=log)
+summary(everything_vif_ap1)
+```
+
+### Pairwise tests - Listed_50
+Show that between 0-1 is significant and between 0-2 is significant but between 1-2, it isn't significant. So I should merge it as a presence/absence of the listed building (y/n)
+```{r pairwise test}
+emm <- emmeans(everything_vif_ap1, ~ Listed_50)
+pairwise_results_adjusted <- pairs(emm, adjust = "tukey")
+print(pairwise_results_adjusted)
+```
+
+```{r Listed 50 as y/n}
+roofs_only$Listed_50_yn <- roofs_only$Listed_50
+
+for (i in c(1:13)){
+  if (roofs_only$Listed_50[i]==1){
+    roofs_only$Listed_50_yn[i] <- 1
+  }
+  if (roofs_only$Listed_50[i]==2){
+    roofs_only$Listed_50_yn[i] <- 1
+  }
+}
+
+roofs_only$Listed_50_yn <- as.factor(roofs_only$Listed_50_yn)
+```
+
+## Final Full Model
+
+```{r VIF}
+vif(roofs_only_insects[c("Height","Green_area_m2","Mean_50","SD_100","total_inv_adj")])
+vif(roofs_only_insects[c("Height","Green_area_m2","SD_100","total_inv_adj")])
+vif(roofs_only_insects[c("Green_area_m2","SD_100","total_inv_adj")])
+#all under 3 now 
+```
+
+```{r full model}
+everything_vif_ap_insects <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn+SD_100+total_inv_adj,data=roofs_only_insects,link=log)
+summary(everything_vif_ap_insects)
+```
+Remove insects
+```{r full model -1 }
+everything_vif_ap_insects1 <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn+SD_100,data=roofs_only_insects,link=log)
+summary(everything_vif_ap_insects1)
+```
+Remove SD 100 m 
+```{r final model}
+everything_vif_ap_insects2 <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn,data=roofs_only_insects,link=log)
+summary(everything_vif_ap_insects2)
+```
+
+```{r coefficients}
+exp(4.1327585)
+exp(4.1327585-0.7484915)
+exp(4.1327585+0.7484915)
+
+exp(0.0015230*100)
+exp((0.0015230-0.0004807)*100)
+exp((0.0015230+0.0004807)*100)
+```
+
+```{r model stats}
+#pseudo R2
+1 - (14.801/44.194)
+#dispersion
+14.801/12
+#anova
+anova(everything_vif_ap_insects2,test="Chisq")
+```
+
+### Descriptive Stats 
+```{r descriptive stats}
+mean(roofs_only$Green_area_m2)
+std.error(roofs_only$Green_area_m2)
+sd(roofs_only$Green_area_m2)
+range(roofs_only$Green_area_m2)
+
+
+listed_only <- roofs_only %>%
+  filter(Listed_50_yn=="1")
+
+not_listed_only <- roofs_only %>%
+  filter(Listed_50_yn=="0")
+
+mean(listed_only$Redstart_minutes_even_rounded)
+std.error(listed_only$Redstart_minutes_even_rounded)
+sd(listed_only$Redstart_minutes_even_rounded)
+range(listed_only$Redstart_minutes_even_rounded)
+
+mean(not_listed_only$Redstart_minutes_even_rounded)
+std.error(not_listed_only$Redstart_minutes_even_rounded)
+sd(not_listed_only$Redstart_minutes_even_rounded)
+range(not_listed_only$Redstart_minutes_even_rounded)
+
+```
+
+### Graphing
+```{r boxplot of listed}
+ggplot()+
+  geom_boxplot(data=roofs_only, aes(y=Redstart_minutes_even, x=Listed_50_yn))+
+  theme(legend.position = "bottom")+
+  labs(title="BR Activity v Presence of a Listed Building in 50m Radius",
+        x ="Number of Listed Buildings in 50m Radius", y = "BR Activity (min)")+ 
+  theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
+        plot.title = element_text(face="bold", family="Arial", colour="black", size=14),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"))+
+  scale_x_discrete(labels=c("No Listed Buildings","At Least One Listed Building"))
+```
+
+```{r making a light green gradient background}
+
+light_green_transparent <- rgb(200/255, 238/255, 130/255, alpha = 0.1)
+
+# Create a gradient image and save it
+create_gradient_image <- function(filename, width = 10, height = 10) {
+  # Create a gradient from lightgreen to darkgreen
+  gradient_colors <- colorRampPalette(c("white", light_green_transparent))(100)
+  
+  gradient_matrix <- matrix(rep(gradient_colors, each = 100), nrow = 100, ncol = length(gradient_colors))
+  
+  # Create an image with a gradient
+  img <- gradient_matrix
+  
+  # Save the image as PNG
+  png(filename, width = width * 100, height = height * 100, res = 100)
+  par(mar = c(0, 0, 0, 0))
+  plot(c(0, 1), c(0, 1), type = "n", xlab = "", ylab = "", xaxt = "n", yaxt = "n")
+  rasterImage(img, 0, 0, 1, 1)
+  dev.off()
+}
+
+create_gradient_image("gradient_background.png")
+
+# Load the gradient image
+gradient_image <- "gradient_background.png"
+
+# Read the PNG file into a rasterGrob object
+gradient_grob <- rasterGrob(readPNG(gradient_image), width = unit(1, "npc"), height = unit(1, "npc"))
+```
+
+```{r predictions for graph}
+pred_green_cover_0 <- predict(everything_vif_ap_insects2, 
+                              data.frame(Green_area_m2=c(0:2500), Listed_50_yn="0"), 
+                              type="response")
+
+# Generate predictions for Listed_50_yn = 1
+pred_green_cover_1 <- predict(everything_vif_ap_insects2, 
+                              data.frame(Green_area_m2=c(0:900), Listed_50_yn="1"), 
+                              type="response")
+
+# Create data frames for both predictions
+pred3_0 <- data.frame(Green_area_m2=0:2500, pred_green_cover=pred_green_cover_0, Listed_50_yn="0")
+pred3_1 <- data.frame(Green_area_m2=0:900, pred_green_cover=pred_green_cover_1, Listed_50_yn="1")
+
+# Combine the two data frames
+pred3 <- rbind(pred3_0, pred3_1)
+```
+
+```{r final graph}
+ggplot()+
+  annotation_custom(
+    grob = gradient_grob,
+    xmin = -200, xmax = 3000,
+    ymin = -50, ymax = 500
+  ) +
+  geom_hline(yintercept=0,col="ivory3",size=0.3)+
+  geom_hline(yintercept=100,col="ivory3",size=0.3)+
+  geom_hline(yintercept=200,col="ivory3",size=0.3)+
+  geom_hline(yintercept=300,col="ivory3",size=0.3)+
+  geom_hline(yintercept=400,col="ivory3",size=0.3)+
+  geom_vline(xintercept=0,col="ivory3",size=0.3)+
+  geom_vline(xintercept=500,col="ivory3",size=0.3)+
+  geom_vline(xintercept=1000,col="ivory3",size=0.3)+
+  geom_vline(xintercept=1500,col="ivory3",size=0.3)+
+  geom_vline(xintercept=2000,col="ivory3",size=0.3)+
+  geom_vline(xintercept=2500,col="ivory3",size=0.3)+
+  geom_line(data=pred3, aes(y=pred_green_cover, x=Green_area_m2, col=Listed_50_yn)) +
+  geom_point(data=roofs_only, aes(y=Redstart_minutes_even, x=Green_area_m2,col=Listed_50_yn,size=Listed_50_yn),alpha=0.6)+
+  labs(
+        x =expression("Green Cover on Roof (m"^2*")"), y = "Black Redstart Activity (min)", col="Presence of Listed Buildings in a 50 m Radius",size="Presence of Listed Buildings in a 50 m Radius")+
+  theme(legend.position = "bottom",
+        
+        axis.title.x = element_text(colour="black", size=12),
+        axis.title.y = element_text( colour="black", size=12),
+        panel.background = element_blank(),
+        axis.line.y = element_line(colour = "black"),
+        axis.line.x = element_line(colour = "black"),
+        legend.background = element_rect(fill="whitesmoke",
+                                  size=0.5, linetype="solid", 
+                                  colour ="black"),
+        legend.text=element_text(size=8),
+        legend.title=element_text(size=10),
+        legend.box = "vertical")  +
+  scale_colour_manual(labels= c("No Listed Buildings", "At Least One Listed Building"),
+                      values = c("red3","blue3"))+
+  scale_x_continuous(limits=c(0,2500))+
+  scale_size_manual(labels= c("No Listed Buildings", "At Least One Listed Building"),values=c(2,4))
+```
+#Intensive vs. extensive green roofs
+```{r graph}
+ggplot(green_insects_only, aes(x=Type,y=Redstart_minutes_even,fill=Type))+
+  geom_boxplot(outlier.colour = NA)+
+  scale_fill_manual(values=c("darkolivegreen3",light_green))+
+  geom_point(data = filter(green_insects_only, outlier), aes(fill = Type), size = 3, shape = 21,col="black")+
+  xlab("Type of Green Roof")+
+  ylab("Black Redstart Activity (min)")+
+  theme(legend.position="none",
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=12),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=12),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.y = element_line(color = "ivory4",
+                                        size = 0.1),
+        text=element_text(face='bold', family="Arial",colour="black", size=11))+
+  guides(fill = "none")+
+  scale_x_discrete(labels=c("Intensive","Extensive"))+
+  geom_jitter(aes(alpha=as.factor(Type.show),fill=Type),size = 3, shape = 21,col="black", show.legend=FALSE)+
+  scale_fill_manual(values = c("darkgreen", "chartreuse3"))+
+  scale_alpha_manual(values = c(0,1))
+
+```
+```{r models}
+int_ext_nb <- glm.nb(formula = Redstart_minutes_even_rounded~Type,data=green_insects_only,link=log)
+summary(int_ext_nb)
+
+```
+
+```{r anova}
+anova(int_ext_nb,test="Chisq")
+```
+
+```{r}
+extensive_only <- green_insects_only %>%
+  filter(Type == "extensive")
+
+mean(extensive_only$Redstart_minutes_even)
+sd(extensive_only$Redstart_minutes_even)
+
+intensive_only <- green_insects_only %>%
+  filter(Type == "intensive")
+
+mean(intensive_only$Redstart_minutes_even)
+sd(intensive_only$Redstart_minutes_even)
+```
+
+
+#Other, unused 
+
+## Daily Hours of Activity
+```{r making time column for all detections}
+#to add columns for unique minute and date to figure out how many characters is in the string in Begin.Path
+all_detections$Time <- substr(all_detections$Minute, 10,15)
+
+all_detections$Hour <- substr(all_detections$Minute, 10,11)
+
+#all_detections$Time <- as.numeric(all_detections$Time)
+
+```
+
+```{r counting activity in different minutes/hours}
+#this does how many detections per minute 
+all_detections_time <- all_detections %>%
+  group_by(Time) %>%
+  summarize(
+    Count = n()
+  )
+
+#how many detections per hour
+all_detections_hour <- all_detections %>%
+  group_by(Hour) %>%
+  summarize(
+    Count = n()
+  )
+
+#making them numeric
+all_detections_time$Time_numeric <- c(1:223)
+all_detections_time$Time_numeric <- as.numeric(all_detections_time$Time)
+
+all_detections_hour$Hour_numeric <- c(1:20)
+all_detections_hour$Hour_numeric <- as.numeric(all_detections_hour$Hour)
+
+#manually adding in the hours with no observations
+hour_00 <- c("00",0,0)
+hour_01 <- c("01",0,1)
+hour_22 <- c("22",0,22)
+hour_23 <- c("23",0,23)
+
+all_detections_hour <- rbind(all_detections_hour,hour_00,hour_01,hour_22,hour_23)
+
+all_detections_hour$Hour_numeric<- as.numeric(all_detections_hour$Hour_numeric)
+
+all_detections_hour$Count<- as.numeric(all_detections_hour$Count)
+```
+
+```{r barplot by time }
+#note - I worry that it's not showing the empty minutes
+barplot(all_detections_time$Count ~ all_detections_time$Time_numeric)
+```
+
+```{r barplot by hour}
+ggplot(data=all_detections_hour, aes(y=Count, x=Hour_numeric))+
+  geom_bar(stat="identity")+
+  scale_x_continuous(breaks=c(0:24))
+```
+
+```{r sites by their timings}
+#making a time as numeric column
+all_detections$Time_numeric <- c(1:3916)
+all_detections$Time_numeric <- as.numeric(all_detections$Time)
+```
+
+```{r stats about timings}
+#All detections I used (24/7)
+print("My 24/7")
+nrow(all_detections)
+length(unique(all_detections$site_names))
+
+#Acoustic bird surveys 
+all_detections_absg <- all_detections %>%
+  filter((Time_numeric>34500 & Time_numeric<64500)|
+           (Time_numeric>202200 & Time_numeric<222200))
+
+print("Acoustic Bird Survey Guidelines")
+nrow(all_detections_absg)
+length(unique(all_detections_absg$site_names))
+
+#Partridge
+all_detections_partr <- all_detections %>%
+  filter(Time_numeric>41500 & Time_numeric<215500)
+
+print("Partridge 2018")
+nrow(all_detections_partr)
+length(unique(all_detections_partr$site_names))
+
+#Bota
+all_detections_bota <- all_detections %>%
+  filter(Time_numeric>80000 & Time_numeric<190000)
+
+print("Bota 2023")
+nrow(all_detections_bota)
+length(unique(all_detections_bota$site_names))
+```
+
+
+## Green cover in parks v roofs
+```{r looking at green cover}
+all_sites$green_cover <- as.numeric(gsub("%", "", all_sites$green_cover)) 
+
+mean(all_sites$green_cover[all_sites$Type=="garden"])
+sd(all_sites$green_cover[all_sites$Type=="garden"])
+range(all_sites$green_cover[all_sites$Type=="garden"])
+  
+boxplot(green_cover ~ Type, data=all_sites)
+```
+
+
+## Full Model Without Insect Outlier (No London Wall)
+I ran these models just to check if invertebrate abundance had a significant effect without the abundance outlier (60 London Wall). It did not.
+```{r VIF}
+vif(roofs_only_insects_no_london[c("Height","Green_area_m2","Mean_50","SD_100","total_inv_adj")])#remove mean 50
+vif(roofs_only_insects_no_london[c("Height","Green_area_m2","SD_100","total_inv_adj")]) #remove height
+vif(roofs_only_insects_no_london[c("Green_area_m2","SD_100","total_inv_adj")])
+#all under 3 now 
+```
+
+```{r full model}
+everything_vif_ap_insects_no_london <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn+SD_100+total_inv_adj,data=roofs_only_insects_no_london,link=log)
+summary(everything_vif_ap_insects_no_london)
+```
+Still  remove insects
+```{r full model - 1}
+everything_vif_ap_insects_no_london1 <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn+SD_100,data=roofs_only_insects_no_london,link=log)
+summary(everything_vif_ap_insects_no_london1)
+```
+Still remove SD
+```{r final model}
+everything_vif_ap_insects_no_london2 <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn,data=roofs_only_insects_no_london,link=log)
+summary(everything_vif_ap_insects_no_london2)
+```
+
+
+
+## Invertebrates and Height
+I didn't use this in my project 
+```{r plots w/ and w/o outlier}
+ggplot(all_sites_insects,aes(x=Height,y=total_inv_adj))+
+  geom_point()+
+  labs(
+    title="Total Number of Invertebrates by Height"
+  )+
+  xlab("Height")+
+  ylab("Total Number of Invertebrates")+
+  theme(plot.title=element_text(size=8))
+
+ggplot(all_sites_insects_no_o,aes(x=Height,y=total_inv_adj))+
+  geom_point()+
+  labs(
+    title="Total Number of Invertebrates by Height, No London Wall"
+  )+
+  xlab("Height")+
+  ylab("Total Number of Invertebrates")+
+  theme(plot.title=element_text(size=8))
+
+```
+
+```{r histogram roof only}
+hist(roofs_only_insects$total_inv_adj)
+hist(roofs_only_insects_no_london$total_inv_adj)
+```
+
+### Models
+```{r poisson}
+insect_height_poisson <- glm(formula = total_inv_adj~Height,family="poisson",data=roofs_only_insects_no_london)
+summary(insect_height_poisson)
+```
+
+```{r poisson with random}
+insect_height_poisson_random <- glmer(total_inv_adj ~ Height + (1 | week), data = roofs_only_insects_no_london, family = poisson(link = "log"))
+summary(insect_height_poisson_random)
+```
+
+```{r final graph}
+#predict for line for graph
+pred_insect_height <-(predict(insect_height_poisson_random, data.frame(Height=c(5:70),week="week_1"), type="response" ))
+pred14_week1 <- data.frame(Height=5:70, pred_insect_height)
+
+pred_insect_height <-(predict(insect_height_poisson_random, data.frame(Height=c(5:70),week="week_2"), type="response" ))
+pred14_week2 <- data.frame(Height=5:70, pred_insect_height)
+
+pred_insect_height <-(predict(insect_height_poisson_random, data.frame(Height=c(5:70),week="week_3"), type="response" ))
+pred14_week3 <- data.frame(Height=5:70, pred_insect_height)
+
+pred_insect_height <-(predict(insect_height_poisson_random, data.frame(Height=c(5:70),week="week_4"), type="response" ))
+pred14_week4 <- data.frame(Height=5:70, pred_insect_height)
+
+ggplot()+
+  geom_point(data=roofs_only_insects_no_london,aes(x=Height,y=total_inv_adj,col=green_roof))+
+  geom_line(data=pred14_week1, aes(y=pred_insect_height,x=Height))+
+  geom_line(data=pred14_week2, aes(y=pred_insect_height,x=Height))+
+  geom_line(data=pred14_week3, aes(y=pred_insect_height,x=Height))+
+  geom_line(data=pred14_week4, aes(y=pred_insect_height,x=Height))+
+  labs(title="Total Number of Invertebrates by Height, No London Wall",
+        x ="Height of Roof (m)", y = "Total Number of Invertebrates",col="Type of Roof")+ 
+  theme(legend.position = "bottom",
+        text=element_text(face='bold', family="Arial",colour="black", size=12),
+        plot.title = element_text(face="bold", family="Arial", colour="black", size=12),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+         legend.background = element_rect(fill="whitesmoke",
+                                  size=0.5, linetype="solid", 
+                                  colour ="black"),
+        legend.text=element_text(size=6),
+        legend.title=element_text(size=7))+
+  scale_x_continuous(limits=c(5,70),breaks=seq(from=5,to=65,by=10))+
+  scale_colour_manual(labels=c("Conventional","Green"), values = c("grey","seagreen"))
+
+```

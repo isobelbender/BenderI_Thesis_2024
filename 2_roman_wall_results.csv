@@ -1,0 +1,9 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,27117,27120,0,12000,Black Redstart,blared1,0.1328,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240620_052000.wav,57
+2,Spectrogram 1,1,43170,43173,0,12000,Black Redstart,blared1,0.1547,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240621_040002.wav,45
+3,Spectrogram 1,1,43629,43632,0,12000,Black Redstart,blared1,0.1351,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240621_044002.wav,48
+4,Spectrogram 1,1,43794,43797,0,12000,Black Redstart,blared1,0.2306,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240621_045502.wav,42
+5,Spectrogram 1,1,44883,44886,0,12000,Black Redstart,blared1,0.816,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240621_063000.wav,3
+6,Spectrogram 1,1,44889,44892,0,12000,Black Redstart,blared1,0.1221,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240621_063000.wav,9
+7,Spectrogram 1,1,71670,71673,0,12000,Black Redstart,blared1,0.1228,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240622_200500.wav,30
+8,Spectrogram 1,1,71682,71685,0,12000,Black Redstart,blared1,0.1711,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 2\roman wall data\Data2\ROMAN_20240622_200500.wav,42

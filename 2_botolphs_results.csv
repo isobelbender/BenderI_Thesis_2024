@@ -1,0 +1,8 @@
+﻿Selection,View,Channel,Begin Time (s),End Time (s),Low Freq (Hz),High Freq (Hz),Common Name,Species Code,Confidence,Begin Path,File Offset (s)
+1,Spectrogram 1,1,13203,13206,0,12000,Black Redstart,blared1,0.3153,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\Botolphs july 2\Data2\BOTOLPH_20240626_070000.wav,6
+2,Spectrogram 1,1,13230,13233,0,12000,Black Redstart,blared1,0.1164,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\Botolphs july 2\Data2\BOTOLPH_20240626_070000.wav,33
+3,Spectrogram 1,1,13236,13239,0,12000,Black Redstart,blared1,0.3747,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\Botolphs july 2\Data2\BOTOLPH_20240626_070000.wav,39
+4,Spectrogram 1,1,28422,28425,0,12000,Black Redstart,blared1,0.6337,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\Botolphs july 2\Data2\BOTOLPH_20240627_043002.wav,18
+5,Spectrogram 1,1,82674,82677,0,12000,Black Redstart,blared1,0.1515,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\Botolphs july 2\Data2\BOTOLPH_20240630_091000.wav,9
+6,Spectrogram 1,1,96420,96423,0,12000,Black Redstart,blared1,0.1057,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\Botolphs july 2\Data2\BOTOLPH_20240701_043502.wav,51
+7,Spectrogram 1,1,113598,113601,0,12000,Black Redstart,blared1,0.101,C:\Users\ikb23\OneDrive - Imperial College London\Desktop\week 3\Botolphs july 2\Data2\BOTOLPH_20240702_045502.wav,24
