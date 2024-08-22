@@ -2007,13 +2007,17 @@ summary(roof_nb)
 
 Coefficient back transformations 
 ```{r coefficients}
+confint(roof_nb)
+exp(2.139927)
+exp(5.792140)
+exp(4.0554)
+
 #gardens
 exp(0)
 #roofs
 exp(4.0519)
 #95 CI
-exp(4.0519-2*0.8997 )
-exp(4.0542+2*0.8997 )
+
 ```
 
 ```{r model stats}
@@ -2596,13 +2600,14 @@ summary(everything_vif_ap_insects2)
 ```
 
 ```{r coefficients}
-exp(4.1327585)
-exp(4.1327585-0.7484915)
-exp(4.1327585+0.7484915)
+exp(3.9625333)
+exp(0.0013978*100)
+confint(everything_vif_ap_insects2)
+exp(0.0002785652*100)
+exp(0.002670982*100)
 
-exp(0.0015230*100)
-exp((0.0015230-0.0004807)*100)
-exp((0.0015230+0.0004807)*100)
+exp(2.5321879881)
+exp(5.532967102)
 ```
 
 ```{r model stats}
