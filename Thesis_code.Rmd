@@ -13,6 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #Set Up 
 
 ```{r Packages}
+#install.packages("rmarkdown")
 #install.packages("extrafont")
 #install.packages("RColorBrewer")
 #install.packages("forcats")
@@ -22,6 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages("fitdistrplus")
 #install.packages('performance')
 #install.packages('DHARMa')
+#install.packages("dplyr")
 #install.packages('spatialRF')
 #install.packages('emmeans')
 #install.packages('MuMIn')
@@ -37,6 +39,8 @@ knitr::opts_chunk$set(echo = TRUE)
 #install.packages('graphics')
 #install.packages('lme4')
 #install.packages('Matrix')
+#install.packages('gridExtra')
+#install.packages('viridis')
 ```
 
 ```{r Requiring Packages}
@@ -82,6 +86,7 @@ require(statmod)
 #for glm mixed models
 library(lme4)
 library(Matrix)
+require(png)
 
 ```
 
@@ -1415,7 +1420,7 @@ validation_accuracy <- ggplot()+
   geom_point(data=validation_stats,aes(y=num_detections,x=thresholds))+
   geom_hline(yintercept=0.95,linetype="dashed",col="blue")+
   geom_vline(xintercept=0.77,linetype="dashed",col="blue")+
-  geom_hline(yintercept=0.99,linetype="dashed",col="hotpink")+
+  geom_hline(yintercept=0.99,linetype="dashed",col="red")+
   theme(legend.position = "bottom")+
   labs(x ="Threshold of Confidence For BirdNET Detections (0.1-1)", y = "Precision (Based on Results of Manual Validation)")+ 
   theme(text=element_text(face='bold', family="Arial",colour="black", size=12),
@@ -1431,7 +1436,7 @@ validation_accuracy <- ggplot()+
 #RECALL
 validation_recall <- ggplot()+
   geom_point(data=validation_stats,aes(y=recall,x=thresholds))+
-  geom_hline(yintercept=0.987,linetype="dashed",col="hotpink")+
+  geom_hline(yintercept=0.987,linetype="dashed",col="red")+
   geom_hline(yintercept=0.3621,linetype="dashed",col="blue")+
   geom_vline(xintercept=0.77,linetype="dashed",col="blue")+
   theme(legend.position = "bottom")+
@@ -1605,7 +1610,7 @@ precision_by_site_plot
 
 ggarrange(
   confidence_by_site_plot, precision_by_site_plot,
-  ncol = 2, nrow = 1,
+  ncol = 1, nrow = 2,
   labels = c("A", "B"),
   font.label = list(size = 15, color = "black"),
   common.legend = TRUE,  # Show common legend if needed
@@ -2004,20 +2009,24 @@ sd(roofs_only$Redstart_minutes_even)
 roof_nb <- glm.nb(formula = Redstart_minutes_even_rounded~roof,data=all_sites,link=log)
 summary(roof_nb)
 ```
-
-Coefficient back transformations 
-```{r coefficients}
+```{r}
 confint(roof_nb)
 exp(2.139927)
 exp(5.792140)
 exp(4.0554)
+```
 
+
+
+Coefficient back transformations 
+```{r coefficients}
 #gardens
 exp(0)
 #roofs
 exp(4.0519)
 #95 CI
-
+exp(4.0519-2*0.8997 )
+exp(4.0542+2*0.8997 )
 ```
 
 ```{r model stats}
@@ -2044,83 +2053,6 @@ plot(roof_nb)
 ```
 
 
-# Conventional vs Green Roofs
-I did not end up using this in my report
-## Graph
-```{r}
-#making my own colour 
-light_green <- rgb(200/255, 238/255, 130/255)
-
-ggplot(roofs_only,aes(x=green_roof,y=Redstart_minutes_even, fill=green_roof))+
-  geom_boxplot()+
-  labs(title="All Roof Sites",
-        x ="Type of Roof", y = "BR Activity (min)")+ 
-  theme(legend.position="none",
-        plot.title = element_text(face="bold", family="Arial", colour="black", size=11),
-        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
-        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
-        panel.background = element_blank(),
-        axis.line = element_line(colour = "black"),
-        panel.grid.major.y = element_line(color = "ivory4",
-                                        size = 0.1))+
-  scale_fill_manual(values=c("ivory3",light_green))+
-  guides(fill = "none")+
-  scale_x_discrete(labels=c("Conventional","Green"))+
-  geom_jitter(aes(alpha=green_roof.show), show.legend=FALSE) +
-  scale_alpha_continuous(range = c(0, 1))
-
-```
-
-## Model
-```{r descriptive stats}
-#All Data
-conventional_only <- all_sites%>%
-  filter(Type=="conventional")
-
-green_roof_only <- all_sites%>%
-  filter(green_roof=="green_roof")
-  
-nrow(conventional_only)
-mean(conventional_only$Redstart_minutes_even_rounded)
-std.error(conventional_only$Redstart_minutes_even_rounded)
-sd(conventional_only$Redstart_minutes_even_rounded)
-range(conventional_only$Redstart_minutes_even_rounded)
-
-nrow(green_roof_only)
-mean(green_roof_only$Redstart_minutes_even_rounded)
-std.error(green_roof_only$Redstart_minutes_even_rounded)
-sd(green_roof_only$Redstart_minutes_even_rounded)
-range(green_roof_only$Redstart_minutes_even_rounded)
-```
-
-```{r NB GLM}
-green_roof_nb <- glm.nb(formula = Redstart_minutes_even_rounded~green_roof,data=roofs_only,link=log)
-summary(green_roof_nb)
-
-```
-
-```{r coefficients}
-#conventional AND green roofs
-exp(3.5742)
-#95 CI
-exp(3.5742-2*1.0626 )
-exp(3.5742+2*1.0626 )
-```
-
-```{r model stats}
-#pseudo R2
-1-(15.921/16.231)
-#dispersion
-15.921/11
-#anova
-anova(green_roof_nb,test="Chisq")
-#check zero inflation
-check_zeroinflation(green_roof_nb)
-```
-
-```{r diagnostic plots }
-plot(green_roof_nb)
-```
 
 
 #Listed Buildings Data
@@ -2453,8 +2385,36 @@ print(pairwise_results_adjusted1)
 
 ## Conv v Green Roof
 ```{r final boxplot}
+roofs_only_insects$outlier <- c(1:13)
+
+for (i in c(1:13)) {
+  if (roofs_only_insects$total_inv_adj[i] > 100){
+    roofs_only_insects$outlier[i] <- 1
+  }
+  else {
+    roofs_only_insects$outlier[i] <- 0
+  }
+}
+roofs_only_insects$outlier <- as.logical(roofs_only_insects$outlier)
+
+green_insects_only <- roofs_only_insects %>%
+  filter(green_roof=="green_roof")
+
+green_insects_only <- green_insects_only %>%
+  mutate(Points_Type = ifelse(Type == "intensive", "Type1", "Type2"))
+
+roofs_only_insects <- roofs_only_insects %>%
+  group_by(green_roof) %>%
+  mutate(Type.show1 = as.numeric(  
+    between(total_inv_adj, 
+            quantile(total_inv_adj)[2] - 1.5*IQR(total_inv_adj),
+            quantile(total_inv_adj)[4] + 1.5*IQR(total_inv_adj)))) 
+
+light_green <- rgb(200/255, 238/255, 130/255)
+
 ggplot(roofs_only_insects,aes(x=green_roof,y=total_inv_adj, fill=green_roof)) +
-  geom_boxplot() +
+  geom_boxplot(outlier.colour = NA) +
+  geom_point(data = filter(roofs_only_insects, outlier), color = "chartreuse3", size = 3, shape = 16)+
   xlab("Type of Roof")+
   ylab("Total Number of Invertebrates")+
   theme(legend.position="none",
@@ -2466,10 +2426,10 @@ ggplot(roofs_only_insects,aes(x=green_roof,y=total_inv_adj, fill=green_roof)) +
                                         size = 0.1))+
   scale_fill_manual(values=c("ivory3",light_green))+
   guides(fill = "none")+
-  scale_x_discrete(labels=c("Conventional","Green"))
-
-  #geom_jitter(aes(alpha=green_roof_insects_show), show.legend=FALSE) +
-  #scale_alpha_continuous(range = c(0, 1))
+  scale_x_discrete(labels=c("Conventional","Green"))+
+  geom_jitter(aes(alpha=as.factor(Type.show1),color=green_roof),size = 3, shape = 16, show.legend=FALSE)+
+  scale_color_manual(values = c("black","chartreuse3"))+
+  scale_alpha_manual(values = c(0,1))
 ```
 
 ### Models
@@ -2560,22 +2520,24 @@ pairwise_results_adjusted <- pairs(emm, adjust = "tukey")
 print(pairwise_results_adjusted)
 ```
 
-```{r Listed 50 as y/n}
-roofs_only$Listed_50_yn <- roofs_only$Listed_50
+```{r Listed 50 as binary}
+roofs_only_insects$Listed_50_yn <- roofs_only_insects$Listed_50
 
 for (i in c(1:13)){
-  if (roofs_only$Listed_50[i]==1){
-    roofs_only$Listed_50_yn[i] <- 1
+  if (roofs_only_insects$Listed_50[i]==1){
+    roofs_only_insects$Listed_50_yn[i] <- 1
   }
-  if (roofs_only$Listed_50[i]==2){
-    roofs_only$Listed_50_yn[i] <- 1
+  if (roofs_only_insects$Listed_50[i]==2){
+    roofs_only_insects$Listed_50_yn[i] <- 1
   }
 }
 
-roofs_only$Listed_50_yn <- as.factor(roofs_only$Listed_50_yn)
+roofs_only_insects$Listed_50_yn <- as.factor(roofs_only_insects$Listed_50_yn)
 ```
 
 ## Final Full Model
+
+
 
 ```{r VIF}
 vif(roofs_only_insects[c("Height","Green_area_m2","Mean_50","SD_100","total_inv_adj")])
@@ -2583,6 +2545,7 @@ vif(roofs_only_insects[c("Height","Green_area_m2","SD_100","total_inv_adj")])
 vif(roofs_only_insects[c("Green_area_m2","SD_100","total_inv_adj")])
 #all under 3 now 
 ```
+
 
 ```{r full model}
 everything_vif_ap_insects <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn+SD_100+total_inv_adj,data=roofs_only_insects,link=log)
@@ -2599,9 +2562,7 @@ everything_vif_ap_insects2 <- glm.nb(formula = Redstart_minutes_even_rounded~Gre
 summary(everything_vif_ap_insects2)
 ```
 
-```{r coefficients}
-exp(3.9625333)
-exp(0.0013978*100)
+```{r}
 confint(everything_vif_ap_insects2)
 exp(0.0002785652*100)
 exp(0.002670982*100)
@@ -2610,11 +2571,22 @@ exp(2.5321879881)
 exp(5.532967102)
 ```
 
+
+```{r coefficients}
+exp(4.1327585)
+exp(4.1327585-0.7484915)
+exp(4.1327585+0.7484915)
+
+exp(0.0013978*100)
+exp((0.0015230-0.0004807)*100)
+exp((0.0015230+0.0004807)*100)
+```
+
 ```{r model stats}
 #pseudo R2
-1 - (14.801/44.194)
+1 - (15.006/42.796)
 #dispersion
-14.801/12
+15.006/12
 #anova
 anova(everything_vif_ap_insects2,test="Chisq")
 ```
@@ -2626,6 +2598,18 @@ std.error(roofs_only$Green_area_m2)
 sd(roofs_only$Green_area_m2)
 range(roofs_only$Green_area_m2)
 
+
+roofs_only$Listed_50_yn <- roofs_only$Listed_50
+
+
+for (i in c(1:13)){
+  if (roofs_only$Listed_50[i]==1){
+    roofs_only$Listed_50_yn[i] <- 1
+  }
+  if (roofs_only$Listed_50[i]==2){
+    roofs_only$Listed_50_yn[i] <- 1
+  }
+}
 
 listed_only <- roofs_only %>%
   filter(Listed_50_yn=="1")
@@ -2687,6 +2671,7 @@ create_gradient_image("gradient_background.png")
 
 # Load the gradient image
 gradient_image <- "gradient_background.png"
+
 
 # Read the PNG file into a rasterGrob object
 gradient_grob <- rasterGrob(readPNG(gradient_image), width = unit(1, "npc"), height = unit(1, "npc"))
@@ -2752,10 +2737,27 @@ ggplot()+
 ```
 #Intensive vs. extensive green roofs
 ```{r graph}
+green_insects_only$outlier <- c(1:10)
+
+for (i in c(1:10)) {
+  if (green_insects_only$Redstart_minutes_even[i] > 100){
+    green_insects_only$outlier[i] <- 1
+  }
+  else {
+    green_insects_only$outlier[i] <- 0
+  }
+}
+
+green_insects_only$outlier <- as.logical(green_insects_only$outlier)
+
+
+green_insects_only <- green_insects_only %>%
+  mutate(Points_Type = ifelse(Type == "intensive", "Type1", "Type2"))
+
 ggplot(green_insects_only, aes(x=Type,y=Redstart_minutes_even,fill=Type))+
   geom_boxplot(outlier.colour = NA)+
-  scale_fill_manual(values=c("darkolivegreen3",light_green))+
-  geom_point(data = filter(green_insects_only, outlier), aes(fill = Type), size = 3, shape = 21,col="black")+
+  scale_fill_manual(name= "Type", values=c("intensive" = "darkolivegreen3","extensive" = light_green))+
+  geom_point(data = filter(green_insects_only, outlier), aes(color = Points_Type), size = 3, shape = 16)+
   xlab("Type of Green Roof")+
   ylab("Black Redstart Activity (min)")+
   theme(legend.position="none",
@@ -2768,9 +2770,9 @@ ggplot(green_insects_only, aes(x=Type,y=Redstart_minutes_even,fill=Type))+
         text=element_text(face='bold', family="Arial",colour="black", size=11))+
   guides(fill = "none")+
   scale_x_discrete(labels=c("Intensive","Extensive"))+
-  geom_jitter(aes(alpha=as.factor(Type.show),fill=Type),size = 3, shape = 21,col="black", show.legend=FALSE)+
-  scale_fill_manual(values = c("darkgreen", "chartreuse3"))+
-  scale_alpha_manual(values = c(0,1))
+  geom_jitter(aes(alpha=as.factor(Type.show),color=Points_Type),size = 3, shape = 16, show.legend=FALSE)+
+  scale_alpha_manual(values = c(0,1))+
+  scale_color_manual(name="Points_Type", values = c("Type1" = "darkgreen", "Type2" = "chartreuse3"))
 
 ```
 ```{r models}
@@ -2799,6 +2801,8 @@ sd(intensive_only$Redstart_minutes_even)
 
 
 #Other, unused 
+
+
 
 ## Daily Hours of Activity
 ```{r making time column for all detections}
@@ -2859,7 +2863,7 @@ ggplot(data=all_detections_hour, aes(y=Count, x=Hour_numeric))+
 
 ```{r sites by their timings}
 #making a time as numeric column
-all_detections$Time_numeric <- c(1:3916)
+all_detections$Time_numeric <- c(1:3920)
 all_detections$Time_numeric <- as.numeric(all_detections$Time)
 ```
 
@@ -2909,6 +2913,22 @@ boxplot(green_cover ~ Type, data=all_sites)
 
 
 ## Full Model Without Insect Outlier (No London Wall)
+
+```{r}
+roofs_only_insects_no_london$Listed_50_yn <- roofs_only_insects_no_london$Listed_50
+
+for (i in c(1:12)){
+  if (roofs_only_insects_no_london$Listed_50[i]==1){
+    roofs_only_insects_no_london$Listed_50_yn[i] <- 1
+  }
+  if (roofs_only_insects_no_london$Listed_50[i]==2){
+    roofs_only_insects_no_london$Listed_50_yn[i] <- 1
+  }
+}
+
+roofs_only_insects_no_london$Listed_50_yn <- as.factor(roofs_only_insects_no_london$Listed_50_yn)
+```
+
 I ran these models just to check if invertebrate abundance had a significant effect without the abundance outlier (60 London Wall). It did not.
 ```{r VIF}
 vif(roofs_only_insects_no_london[c("Height","Green_area_m2","Mean_50","SD_100","total_inv_adj")])#remove mean 50
@@ -3011,3 +3031,99 @@ ggplot()+
   scale_colour_manual(labels=c("Conventional","Green"), values = c("grey","seagreen"))
 
 ```
+```{r}
+
+everything_vif_ap_insects <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn+total_inv_adj,data=roofs_only_insects,link=log)
+summary(everything_vif_ap_insects)
+
+```
+```{r}
+mean(roofs_only_insects$total_inv_adj)
+sd(roofs_only_insects$total_inv_adj)
+range(roofs_only_insects$total_inv_adj)
+```
+
+```{r}
+
+everything_vif_ap_insects <- glm.nb(formula = Redstart_minutes_even_rounded~Green_area_m2+Listed_50_yn,data=roofs_only_insects,link=log)
+summary(everything_vif_ap_insects)
+
+```
+## Conventional vs Green Roofs
+I did not end up using this in my report
+### Graph
+```{r}
+#making my own colour 
+light_green <- rgb(200/255, 238/255, 130/255)
+
+ggplot(roofs_only,aes(x=green_roof,y=Redstart_minutes_even, fill=green_roof))+
+  geom_boxplot()+
+  labs(title="All Roof Sites",
+        x ="Type of Roof", y = "BR Activity (min)")+ 
+  theme(legend.position="none",
+        plot.title = element_text(face="bold", family="Arial", colour="black", size=11),
+        axis.title.x = element_text(face="bold", family="Arial", colour="black", size=10),
+        axis.title.y = element_text(face="bold", family="Arial", colour="black", size=10),
+        panel.background = element_blank(),
+        axis.line = element_line(colour = "black"),
+        panel.grid.major.y = element_line(color = "ivory4",
+                                        size = 0.1))+
+  scale_fill_manual(values=c("ivory3",light_green))+
+  guides(fill = "none")+
+  scale_x_discrete(labels=c("Conventional","Green"))+
+  geom_jitter(aes(alpha=green_roof.show), show.legend=FALSE) +
+  scale_alpha_continuous(range = c(0, 1))
+
+```
+
+### Model
+```{r descriptive stats}
+#All Data
+conventional_only <- all_sites%>%
+  filter(Type=="conventional")
+
+green_roof_only <- all_sites%>%
+  filter(green_roof=="green_roof")
+  
+nrow(conventional_only)
+mean(conventional_only$Redstart_minutes_even_rounded)
+std.error(conventional_only$Redstart_minutes_even_rounded)
+sd(conventional_only$Redstart_minutes_even_rounded)
+range(conventional_only$Redstart_minutes_even_rounded)
+
+nrow(green_roof_only)
+mean(green_roof_only$Redstart_minutes_even_rounded)
+std.error(green_roof_only$Redstart_minutes_even_rounded)
+sd(green_roof_only$Redstart_minutes_even_rounded)
+range(green_roof_only$Redstart_minutes_even_rounded)
+```
+
+```{r NB GLM}
+green_roof_nb <- glm.nb(formula = Redstart_minutes_even_rounded~green_roof,data=roofs_only,link=log)
+summary(green_roof_nb)
+
+```
+
+```{r coefficients}
+#conventional AND green roofs
+exp(3.5742)
+#95 CI
+exp(3.5742-2*1.0626 )
+exp(3.5742+2*1.0626 )
+```
+
+```{r model stats}
+#pseudo R2
+1-(15.921/16.231)
+#dispersion
+15.921/11
+#anova
+anova(green_roof_nb,test="Chisq")
+#check zero inflation
+check_zeroinflation(green_roof_nb)
+```
+
+```{r diagnostic plots }
+plot(green_roof_nb)
+```
+
